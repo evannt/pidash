@@ -7,18 +7,19 @@ logger = logging.getLogger(__name__)
 class ImageManager:
     """
     Manages image loading and cycling.
-    Extensible for future web upload functionality.
     """
+
+    image_extensions = [".jpg", ".jpeg", ".png", ".bmp"]
+
     def __init__(self, config):
         self.config = config
-        self.image_folder = config.get('image_folder')
-        self.extensions = config.get('image_extensions')
-        self.current_index = config.get('current_image_index', 0)
+        self.image_folder = config.get("image_folder")
+        self.current_index = config.get("current_image_index", 0)
         self.image_files = []
         self.refresh_image_list()
     
     def refresh_image_list(self):
-        """Scan folder for valid image files."""
+        """Scan mages folder for images."""
         if not os.path.exists(self.image_folder):
             logger.warning(f"Image folder '{self.image_folder}' doesn't exist. Creating it.")
             os.makedirs(self.image_folder, exist_ok=True)
@@ -26,26 +27,24 @@ class ImageManager:
         
         self.image_files = []
         for file in os.listdir(self.image_folder):
-            if any(file.lower().endswith(ext) for ext in self.extensions):
+            if any(file.lower().endswith(ext) for ext in self.image_extensions):
                 self.image_files.append(os.path.join(self.image_folder, file))
         
-        self.image_files.sort()  # Consistent ordering
-        logger.info(f"Found {len(self.image_files)} images")
+        self.image_files.sort()
+        logger.info(f"Successfully loaded {len(self.image_files)} images.")
         
-        # Reset index if it's out of range
         if self.current_index >= len(self.image_files):
             self.current_index = 0
     
     def get_next_image(self):
         """Get the next image in rotation."""
         if not self.image_files:
-            logger.warning("No images found!")
+            logger.warning(f"No images were found in '{self.config.get("image_folder")}'.")
             return None
         
         image_path = self.image_files[self.current_index]
         self.current_index = (self.current_index + 1) % len(self.image_files)
         
-        # Save the updated index
         self.config.set("current_image_index", self.current_index)
         
         try:

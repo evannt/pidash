@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 
-"""
-Image Slideshow for Raspberry Pi Zero 2 W + Inky Impression
-Rotates through images in a folder at configurable intervals.
-Designed to be extensible for future web server functionality.
-"""
-
 import logging
-from slideshow import SlideShow
+from config import Config
+from refresh_task import RefreshTask
+from display_manager import DisplayManager
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 logger.info("Running PiDash")
 
+def main():
+    config = Config()
+    display_manager = DisplayManager(config)
+    refresh_task = RefreshTask(config, display_manager)
+    refresh_task.start()
 
 if __name__ == "__main__":
-    app = SlideShow()
-    app.run()
+    main()

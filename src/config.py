@@ -6,35 +6,25 @@ logger = logging.getLogger(__name__)
 
 class Config:
     """
-    Manages application configuration with extensible structure.
-    Key for future web server integration.
+    Manages application configuration.
     """
-    def __init__(self, config_file="config.json"):
-        self.config_file = config_file
-        self.default_config = {
-            "image_folder": "images",
-            "rotation_interval_seconds": 60,
-            "current_image_index": 0,
-            "display_orientation": 0,
-            "image_extensions": [".jpg", ".jpeg", ".png", ".bmp"]
-        }
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+    config_file = os.path.join(BASE_DIR, "config", "device.json")
+
+    current_image_file = os.path.join(BASE_DIR, "static", "images")
+
+    def __init__(self):
         self.config = self.load_config()
     
     def load_config(self):
-        """Load configuration from file or create with defaults."""
-        if os.path.exists(self.config_file):
-            try:
-                with open(self.config_file, "r") as f:
-                    config = json.load(f)
-                # Merge with defaults for any missing keys
-                for key, value in self.default_config.items():
-                    if key not in config:
-                        config[key] = value
-                return config
-            except Exception as e:
-                logger.error(f"Error loading config: {e}. Using defaults.")
-                return self.default_config.copy()
-        return self.default_config.copy()
+        """Load configuration from file."""
+        with open(self.config_file) as f:
+            config = json.load(f)
+
+        logger.debug("Loaded config:\n%s", json.dumps(config, indent=2))
+
+        return config
     
     def save_config(self):
         """Save current configuration to file."""
@@ -53,3 +43,9 @@ class Config:
         self.config[key] = value
         if save:
             self.save_config()
+
+    def get_resolution(self):
+        """Returns the display resolution as a tuple (width, height) from the configuration."""
+        resolution = self.get("resolution")
+        width, height = resolution
+        return (int(width), int(height))

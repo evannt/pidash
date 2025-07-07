@@ -1,6 +1,7 @@
 import threading
 import time
 import logging
+from image_manager import ImageManager
 
 logger = logging.getLogger(__name__)
 
@@ -9,68 +10,69 @@ class RefreshTask:
     Handles background image rotation using threading.
     Core component for automatic image cycling.
     """
-    def __init__(self, config, image_manager, display_manager):
+    def __init__(self, config, display_manager):
         self.config = config
-        self.image_manager = image_manager
         self.display_manager = display_manager
+        self.image_manager = ImageManager(config)
         
         self.thread = None
+        self.lock = threading.Lock()
         self.running = False
         self.condition = threading.Condition()
     
     def start(self):
-        """Start the background rotation task."""
+        """Start the background refresh task."""
         if self.thread and self.thread.is_alive():
             logger.warning("Rotation task already running")
             return
         
-        self.running = True
         self.thread = threading.Thread(target=self._run, daemon=True)
+        self.running = True
         self.thread.start()
-        logger.info("Rotation task started")
+        logger.info("Refresh task started")
     
     def stop(self):
-        """Stop the rotation task."""
+        """Stop the refresh task."""
         with self.condition:
             self.running = False
             self.condition.notify_all()
         
         if self.thread:
-            self.thread.join(timeout=5)
-            logger.info("Rotation task stopped")
+            self.thread.join()
+            logger.info("Refresh task stopped")
     
-    def trigger_immediate_rotation(self):
-        """Trigger immediate image rotation (useful for web interface)."""
+    def trigger_immediate_refresh(self):
+        """Trigger immediate image refresh (useful for web interface)."""
         with self.condition:
             self.condition.notify_all()
     
     def _run(self):
         """
-        Background rotation loop.
+        Background refresh loop.
         This is the heart of the automatic image cycling.
         """
-        logger.info("Starting rotation loop")
+        logger.info("Starting refresh loop")
         
         while self.running:
             try:
-                # Get rotation interval
-                interval = self.config.get('rotation_interval_seconds', 3600)
-                
-                # Refresh image list and display next image
+                sleep_time = self.config.get("sleep_time", 3600)
+
+                if not self.running:
+                    break
+
                 self.image_manager.refresh_image_list()
                 
                 if self.image_manager.get_image_count() == 0:
-                    logger.warning("No images found, waiting...")
+                    logger.warning("No images available for display.")
                 else:
-                    next_image = self.image_manager.get_next_image()
-                    if next_image:
-                        self.display_manager.display_image(next_image)
+                    image = self.image_manager.get_next_image()
+                    if image:
+                        self.display_manager.display_image(image)
                 
-                # Wait for interval or until notified
                 with self.condition:
                     if self.running:
-                        self.condition.wait(timeout=interval)
+                        self.condition.wait(timeout=sleep_time)
                 
             except Exception as e:
                 logger.exception("Error in rotation loop")
-                time.sleep(10)  # Brief pause before retrying
+                time.sleep(10)
