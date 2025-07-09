@@ -118,7 +118,8 @@ create_venv () {
   if ! python3 -m venv "$VENV_PATH"; then
     echo_error "Failed to create virtual environment!"
     exit 1
-  fi
+  file
+  echo_success "Virtual environment created."
   
   echo "Upgrading pip..."
   if ! "$VENV_PATH/bin/python" -m pip install --upgrade pip setuptools wheel > /dev/null; then
@@ -171,6 +172,11 @@ install_config() {
   CONFIG_BASE_DIR="$SCRIPT_DIR/config_base"
   CONFIG_DIR="$SRC_PATH/config"
   echo "Copying config files to $CONFIG_DIR"
+
+  if ! mkdir -p "$CONFIG_DIR"; then
+    echo_error "Failed to create config directory!"
+    exit 1
+  fi
 
   # Check and copy device.config if it doesn't exist
   if [ ! -f "$CONFIG_DIR/device.json" ]; then
