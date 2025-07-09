@@ -63,7 +63,7 @@ class RefreshTask:
                 self.image_manager.refresh_image_list()
                 
                 if self.image_manager.get_image_count() == 0:
-                    logger.warning("No images available for display.")
+                    logger.warning("No images available for display. Monitoring for changes...")
                 else:
                     image = self.image_manager.get_next_image()
                     if image:

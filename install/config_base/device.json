@@ -1,6 +1,6 @@
 {
     "name": "PiDash",
-    "image_folder": "src/static/images",
+    "image_folder": "static/images",
     "orientation": "horizontal",
     "inverted_image": false,
     "sleep_time": 60,
