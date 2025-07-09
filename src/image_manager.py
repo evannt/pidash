@@ -21,7 +21,7 @@ class ImageManager:
     def refresh_image_list(self):
         """Scan mages folder for images."""
         if not os.path.exists(self.image_folder):
-            logger.warning(f"Image folder '{self.image_folder}' doesn't exist. Creating it.")
+            logger.warning(f"Image folder {self.image_folder} doesn't exist. Creating it.")
             os.makedirs(self.image_folder, exist_ok=True)
             return
         
@@ -39,7 +39,7 @@ class ImageManager:
     def get_next_image(self):
         """Get the next image in rotation."""
         if not self.image_files:
-            logger.warning(f"No images were found in '{self.config.get("image_folder")}'.")
+            logger.warning(f"No images were found in {self.config.get("image_folder")}.")
             return None
         
         image_path = self.image_files[self.current_index]
