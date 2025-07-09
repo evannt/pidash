@@ -118,7 +118,7 @@ create_venv () {
   if ! python3 -m venv "$VENV_PATH"; then
     echo_error "Failed to create virtual environment!"
     exit 1
-  file
+  fi
   echo_success "Virtual environment created."
   
   echo "Upgrading pip..."
@@ -141,7 +141,7 @@ install_app_service () {
   if [ -f "$SERVICE_FILE_SOURCE" ]; then
     if ! cp "$SERVICE_FILE_SOURCE" "$SERVICE_FILE_TARGET"; then
       echo_error "Failed to copy service file!"
-      exit 1/
+      exit 1
     fi
     systemctl daemon-reload
     if ! systemctl enable "$SERVICE_FILE"; then
