@@ -39,7 +39,7 @@ class ImageManager:
     def get_next_image(self):
         """Get the next image in rotation."""
         if not self.image_files:
-            logger.warning(f"No images were found in {self.config.get("image_folder")}.")
+            logger.warning(f"No images were found in {self.config.get('image_folder')}.")
             return None
         
         image_path = self.image_files[self.current_index]
