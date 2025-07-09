@@ -178,16 +178,12 @@ install_config() {
     exit 1
   fi
 
-  # Check and copy device.config if it doesn't exist
-  if [ ! -f "$CONFIG_DIR/device.json" ]; then
-    if ! cp "$CONFIG_BASE_DIR/device.json" "$CONFIG_DIR/"; then
-      echo_error "Failed to copy device.json!"
-      exit 1
-    fi
-    echo_success "\tCopying device.config to $CONFIG_DIR"
-  else
-    echo_success "\tdevice.json already exists in $CONFIG_DIR"
+  # Copy device.config
+  if ! cp "$CONFIG_BASE_DIR/device.json" "$CONFIG_DIR/"; then
+    echo_error "Failed to copy device.json!"
+    exit 1
   fi
+  echo_success "\tCopying device.config to $CONFIG_DIR"
 }
 
 stop_service () {

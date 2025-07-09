@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Formatting stuff
 bold=$(tput bold)
 normal=$(tput sgr0)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
 
 SOURCE=${BASH_SOURCE[0]}
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+while [ -h "$SOURCE" ]; do
   DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
   SOURCE=$(readlink "$SOURCE")
   [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
@@ -15,6 +14,7 @@ done
 SCRIPT_DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 
 APPNAME="pidash"
+SRC_PATH="$SCRIPT_DIR/../src"
 INSTALL_PATH="/usr/local/$APPNAME"
 VENV_PATH="$INSTALL_PATH/venv_$APPNAME"
 
@@ -29,35 +29,45 @@ echo_error() {
   echo -e "$1 [\e[31m\xE2\x9C\x98\e[0m]\n"
 }
 
-# Ensure script is run with sudo
 if [ "$EUID" -ne 0 ]; then
   echo_error "ERROR: This script requires root privileges. Please run it with sudo."
   exit 1
 fi
 
+CONFIG_BASE_DIR="$SCRIPT_DIR/config_base"
+CONFIG_DIR="$SRC_PATH/config"
+echo "Copying config files to $CONFIG_DIR"
+
+if ! mkdir -p "$CONFIG_DIR"; then
+  echo_error "Failed to create config directory!"
+  exit 1
+fi
+
+if ! cp "$CONFIG_BASE_DIR/device.json" "$CONFIG_DIR/"; then
+  echo_error "Failed to copy device.json!"
+  exit 1
+fi
+echo_success "\tCopying device.config to $CONFIG_DIR"
+
 apt-get update -y > /dev/null &
 if [ -f "$APT_REQUIREMENTS_FILE" ]; then
   echo "Installing system dependencies... "
-  xargs -a "$APT_REQUIREMENTS_FILE" sudo apt-get install -y > /dev/null && echo_success "Installed system dependencies."
+  xargs -a "$APT_REQUIREMENTS_FILE" apt-get install -y > /dev/null && echo_success "Installed system dependencies."
 else
   echo_error "ERROR: System dependencies file $APT_REQUIREMENTS_FILE not found!"
   exit 1
 fi
 
-# Check if virtual environment exists
 if [ ! -d "$VENV_PATH" ]; then
   echo_error "ERROR: Virtual environment not found at $VENV_PATH. Run the installation script first."
   exit 1
 fi
 
-# Activate the virtual environment
 source "$VENV_PATH/bin/activate"
 
-# Upgrade pip
 echo "Upgrading pip..."
 $VENV_PATH/bin/python -m pip install --upgrade pip setuptools wheel > /dev/null && echo_success "Pip upgraded successfully."
 
-# Install or update Python dependencies
 if [ -f "$PIP_REQUIREMENTS_FILE" ]; then
   echo "Updating Python dependencies..."
   $VENV_PATH/bin/python -m pip install --upgrade -r "$PIP_REQUIREMENTS_FILE" -qq > /dev/null && echo_success "Dependencies updated successfully."
@@ -67,6 +77,6 @@ else
 fi
 
 echo "Restarting $APPNAME service."
-sudo systemctl restart $APPNAME.service
+systemctl restart $APPNAME.service
 
 echo_success "Update completed."
