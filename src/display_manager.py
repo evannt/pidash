@@ -19,7 +19,7 @@ class DisplayManager:
         self.inky_display.set_border(self.inky_display.BLACK)
         logger.info(f"Inky display initialized: {self.inky_display.width}x{self.inky_display.height}")
         if not self.config.get("resolution"):
-            self.config.set("resolution",[int(self.inky_display.width), int(self.inky_display.height)], write=True)
+            self.config.set("resolution",[int(self.inky_display.width), int(self.inky_display.height)], save=True)
 
     def display_image(self, image, image_settings=[]):
         """
