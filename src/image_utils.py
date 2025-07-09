@@ -1,4 +1,9 @@
+import hashlib
 from PIL import Image, ImageEnhance
+
+def compute_image_hash(self, image):
+    """Compute hash of image to detect changes."""
+    return hashlib.md5(image.tobytes()).hexdigest()
 
 def change_orientation(image, orientation, inverted=False):
     if orientation == "horizontal":

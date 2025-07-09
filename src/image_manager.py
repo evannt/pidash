@@ -9,9 +9,11 @@ class ImageManager:
     Manages image loading and cycling.
     """
     BASE_DIR = os.path.dirname(__file__)
+    IMAGE_DIR = os.path.abspath(BASE_DIR)
     image_extensions = [".jpg", ".jpeg", ".png"]
 
     def __init__(self, config):
+        logger.info(f"IMAGE DIR: {self.IMAGE_DIR}")
         self.config = config
         self.image_folder = os.path.abspath(os.path.join(self.BASE_DIR, config.get("image_folder")))
         self.current_index = config.get("current_image_index", 0)
@@ -50,7 +52,7 @@ class ImageManager:
         
         try:
             image = Image.open(image_path)
-            logger.info(f"Loaded image: {os.path.basename(image_path)} ({self.current_index}/{len(self.image_files)})")
+            logger.info(f"Loaded image for display: {os.path.basename(image_path)} ({self.current_index}/{len(self.image_files)})")
             return image
         except Exception as e:
             logger.error(f"Error loading image {image_path}: {e}")
