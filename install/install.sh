@@ -41,15 +41,15 @@ check_permissions () {
   fi
 }
 
-enable_interfaces (){
+enable_interfaces () {
   echo "Enabling interfaces required for $APPNAME"
   sed -i 's/^dtparam=spi=.*/dtparam=spi=on/' /boot/config.txt
   sed -i 's/^#dtparam=spi=.*/dtparam=spi=on/' /boot/config.txt
-  spi-config nonint do_spi 0
+  raspi-config nonint do_spi 0
   echo_success "\tSPI Interface has been enabled."
   sed -i 's/^dtparam=i2c_arm=.*/dtparam=i2c_arm=on/' /boot/config.txt
   sed -i 's/^#dtparam=i2c_arm=.*/dtparam=i2c_arm=on/' /boot/config.txt
-  spi-config nonint do_i2c 0
+  raspi-config nonint do_i2c 0
   echo_success "\tI2C Interface has been enabled."
 
   echo "Enabling single CS line for SPI interface in config.txt"
@@ -120,16 +120,19 @@ create_venv () {
     exit 1
   fi
   
+  echo "Upgrading pip..."
   if ! "$VENV_PATH/bin/python" -m pip install --upgrade pip setuptools wheel > /dev/null; then
     echo_error "Failed to upgrade pip!"
     exit 1
   fi
+  echo_success "Pip upgraded."
   
+  echo "Installing python dependencies..."
   if ! "$VENV_PATH/bin/python" -m pip install -r "$PIP_REQUIREMENTS_FILE" -qq > /dev/null; then
     echo_error "Failed to install Python dependencies!"
     exit 1
   fi
-  show_loader "\tInstalling python dependencies. "
+  echo_success "\tInstalling python dependencies. "
 }
 
 install_app_service () {
@@ -137,7 +140,7 @@ install_app_service () {
   if [ -f "$SERVICE_FILE_SOURCE" ]; then
     if ! cp "$SERVICE_FILE_SOURCE" "$SERVICE_FILE_TARGET"; then
       echo_error "Failed to copy service file!"
-      exit 1
+      exit 1/
     fi
     systemctl daemon-reload
     if ! systemctl enable "$SERVICE_FILE"; then
@@ -175,7 +178,7 @@ install_config() {
       echo_error "Failed to copy device.json!"
       exit 1
     fi
-    show_loader "\tCopying device.config to $CONFIG_DIR"
+    echo_success "\tCopying device.config to $CONFIG_DIR"
   else
     echo_success "\tdevice.json already exists in $CONFIG_DIR"
   fi
@@ -211,7 +214,7 @@ copy_project () {
       echo_error "Failed to remove existing installation!"
       exit 1
     fi
-    show_loader "\tRemoving existing installation found at $INSTALL_PATH"
+    echo_success "Removed existing installation found at $INSTALL_PATH"
   fi
 
   if ! mkdir -p "$INSTALL_PATH"; then
@@ -223,7 +226,7 @@ copy_project () {
     echo_error "Failed to create symlink!"
     exit 1
   fi
-  show_loader "\tCreating symlink from $SRC_PATH to $INSTALL_PATH/src"
+  echo_success "Created symlink from $SRC_PATH to $INSTALL_PATH/src"
 }
 
 get_hostname () {
@@ -250,10 +253,10 @@ ask_for_reboot () {
     sleep 2
     reboot now
   elif [[ "${userInput}" == "n" ]]; then
-    echo "Please restart your Raspberry Pi later to apply changes by running 'sudo reboot now'."
+    echo "Please restart your Raspberry Pi later to apply changes by running 'reboot now'."
     exit
   else
-    echo "Unknown input, please restart your Raspberry Pi later to apply changes by running 'sudo reboot now'."
+    echo "Unknown input, please restart your Raspberry Pi later to apply changes by running 'reboot now'."
     sleep 1
   fi
 }
