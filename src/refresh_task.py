@@ -63,11 +63,9 @@ class RefreshTask:
                 self.image_manager.refresh_image_list()
                 
                 if self.image_manager.get_image_count() == 0:
-                    logger.warning("No images available for display.")
+                    logger.warning("No images available for display. Monitoring for changes...")
                 else:
-                    image = self.image_manager.get_next_image()
-                    if image:
-                        self.display_manager.display_image(image)
+                    self.display_next_image()
                 
                 with self.condition:
                     if self.running:
@@ -76,3 +74,9 @@ class RefreshTask:
             except Exception as e:
                 logger.exception("Error in rotation loop")
                 time.sleep(10)
+
+    def display_next_image(self):
+        image = self.image_manager.get_next_image()
+
+        if image:
+            self.display_manager.display_image(image)
