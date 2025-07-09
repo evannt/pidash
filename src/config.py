@@ -12,8 +12,6 @@ class Config:
     
     config_file = os.path.join(BASE_DIR, "config", "device.json")
 
-    #current_image_file = os.path.join(BASE_DIR, "static", "images")
-
     def __init__(self):
         self.config = self.load_config()
     
