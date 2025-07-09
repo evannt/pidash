@@ -19,6 +19,8 @@ class DisplayManager:
         self.inky_display = auto()
         self.inky_display.set_border(self.inky_display.BLACK)
         logger.info(f"Inky display initialized: {self.inky_display.width}x{self.inky_display.height}")
+        if not self.device_config.get_config("resolution"):
+            self.config.set("resolution",[int(self.inky_display.width), int(self.inky_display.height)], write=True)
     
     def compute_image_hash(self, image):
         """Compute hash of image to detect changes."""
