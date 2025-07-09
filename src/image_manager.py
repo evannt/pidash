@@ -24,7 +24,7 @@ class ImageManager:
             logger.warning(f"Image folder {self.image_folder} doesn't exist. Creating it.")
             os.makedirs(self.image_folder, exist_ok=True)
             return
-        
+        logger.info(f"Scanning folder: {self.image_folder}")
         logger.info(f"Scanning images: {os.listdir(self.image_folder)}")
         self.image_files = []
         for file in os.listdir(self.image_folder):
