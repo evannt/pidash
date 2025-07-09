@@ -9,7 +9,7 @@ class ImageManager:
     Manages image loading and cycling.
     """
     BASE_DIR = os.path.dirname(__file__)
-    image_extensions = [".jpg", ".jpeg", ".png", ".bmp"]
+    image_extensions = [".jpg", ".jpeg", ".png"]
 
     def __init__(self, config):
         self.config = config
@@ -19,18 +19,19 @@ class ImageManager:
         self.refresh_image_list()
     
     def refresh_image_list(self):
-        """Scan mages folder for images."""
+        """Scan images folder for images."""
         if not os.path.exists(self.image_folder):
             logger.warning(f"Image folder {self.image_folder} doesn't exist. Creating it.")
             os.makedirs(self.image_folder, exist_ok=True)
             return
         
+        logger.info(f"Scanning images: {os.listdir(self.image_folder)}")
         self.image_files = []
         for file in os.listdir(self.image_folder):
             if any(file.lower().endswith(ext) for ext in self.image_extensions):
+                logger.info(f"Loaded {file}.")
                 self.image_files.append(os.path.join(self.image_folder, file))
         
-        self.image_files.sort()
         logger.info(f"Successfully loaded {len(self.image_files)} images.")
         
         if self.current_index >= len(self.image_files):
