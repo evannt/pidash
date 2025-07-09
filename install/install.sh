@@ -58,7 +58,7 @@ enable_interfaces (){
   echo_success "\tI2C Interface has been enabled."
 
   echo "Enabling single CS line for SPI interface in config.txt"
-  if ! grep -E -q '^[[:space:]]*dtoverlay=spi0-0cs' /boot/firmware/config.txt then
+  if ! grep -E -q '^[[:space:]]*dtoverlay=spi0-0cs' /boot/firmware/config.txt; then
     sed -i '/^dtparam=spi=on/a dtoverlay=spi0-0cs' /boot/firmware/config.txt
   else
     echo "dtoverlay for spi0-0cs already specified"
