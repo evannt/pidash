@@ -8,7 +8,7 @@ class ImageManager:
     """
     Manages image loading and cycling.
     """
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    BASE_DIR = os.path.dirname(__file__)
     image_extensions = [".jpg", ".jpeg", ".png", ".bmp"]
 
     def __init__(self, config):
