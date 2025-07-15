@@ -17,13 +17,6 @@ class ImageManager:
         self.image_files = []
         self.refresh_image_list()
 
-    def set_current_image(self, image_name):
-        for i, img_name in enumerate(self.get_image_names()):
-            if image_name == img_name:
-                self.config.set("current_image_index", i)
-                break
-
-
     def get_image_names(self):
         return [os.path.basename(image_path) for image_path in self.image_files]
     
@@ -107,6 +100,12 @@ class ImageManager:
         if self.current_index >= len(self.image_files):
             self.current_index = 0
     
+    def set_current_image(self, image_name):
+        for i, img_name in enumerate(self.get_image_names()):
+            if image_name == img_name:
+                self.config.set("current_image_index", i)
+                break
+
     def get_current_image(self):
         return self.image_files[self.current_index]
 
