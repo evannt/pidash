@@ -6,10 +6,7 @@ from inky.auto import auto
 logger = logging.getLogger(__name__)
 
 class DisplayManager:
-    """
-    Handles Inky display operations with image processing.
-    Crucial for proper e-ink display rendering.
-    """
+
     def __init__(self, config):
         self.config = config
         self.initialize_display()
@@ -19,28 +16,13 @@ class DisplayManager:
         self.inky_display.set_border(self.inky_display.BLACK)
         logger.info(f"Inky display initialized: {self.inky_display.width}x{self.inky_display.height}")
         if not self.config.get("resolution"):
-            self.config.set("resolution",[int(self.inky_display.width), int(self.inky_display.height)], save=True)
+            self.config.set("resolution", [int(self.inky_display.width), int(self.inky_display.height)], save=True)
 
     def display_image(self, image, image_settings=[]):
-        """
-        Displays the provided image on the Inky display.
-
-        The image has been processed by adjusting orientation and resizing 
-        before being sent to the display.
-
-        Args:
-            image (PIL.Image): The image to be displayed.
-            image_settings (list, optional): Additional settings to modify image rendering.
-
-        Raises:
-            ValueError: If no image is provided.
-        """
-
         logger.info("Displaying image to Inky display.")
         if not image:
             raise ValueError(f"No image provided.")
         
-        # Resize and adjust orientation
         image = change_orientation(image, self.config.get("orientation"))
         image = resize_image(image, self.config.get("resolution"), image_settings)
         if self.config.get("inverted_image"): image = image.rotate(180)

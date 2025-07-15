@@ -1,0 +1,265 @@
+* {
+    --dark-blue: #222831;
+    --dark-green: #12100e;
+    --light-green: #7b5a30;
+
+    --light-green: #718355;
+    --light-green-alt: #a4ac86;
+    --tan-green: #c2c5aa;
+
+    --background-alt-color: #588157;
+    --tan-green: #c2c5aa;
+    --tan: #a68a64;
+    --tan: #d4c7b0;
+    --tan-alt: #b6ad90;
+
+    --background-color: #0f1a1a;
+
+    --red: #be3144;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--dark-green);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 1.25rem;
+}
+
+.container {
+    max-width: 60rem;
+    margin: 0 auto;
+    background-color: var(--dark-green);
+    color: var(--tan);
+    overflow: hidden;
+}
+
+.header {
+    color: var(--tan);
+    padding: 2rem;
+    text-align: center;
+    border-bottom: 0.25rem solid var(--tan);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.625rem;
+    text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
+    color: var(--tan);
+}
+
+.header p {
+    color: var(--tan);
+    font-size: 1.125rem;
+}
+
+.settings {
+    padding: 2.5rem;
+}
+
+.settings-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background-color: var(--dark-green);
+    border: 0.125rem solid var(--tan);
+}
+
+.settings-section h2 {
+    color: var(--tan);
+    margin-bottom: 1.25rem;
+    font-size: 1.5rem;
+    border-bottom: 0.175rem solid var(--tan);
+    padding-bottom: 0.625rem;
+}
+
+.quick-actions,
+.image-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--tan);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 0.125rem solid var(--tan);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background-color: var(--dark-green);
+    color: var(--tan);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--tan);
+    box-shadow: 0 0 0 0.175rem rgba(92, 84, 112, 0.3);
+}
+
+.time-input-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.35rem 0.75rem;
+    border: none;
+    border-radius: 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 0.625rem;
+    margin-bottom: 0.625rem;
+    color: var(--tan-green);
+    background-color: var(--red);
+}
+
+.btn-primary {
+    background-color: var(--light-green-alt);
+    color: var(--background-color);
+}
+
+.btn-primary:hover {
+    transform: translateY(-0.125rem);
+    background-color: var(--tan-green);
+    color: var(--background-color);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.image-item {
+    border: 0.175rem solid var(--light-green-alt);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    background-color: var(--background-alt-color);
+    transition: all 0.3s ease;
+}
+
+.image-item:hover {
+    transform: translateY(-0.35rem);
+    box-shadow: 0 0.625rem 1.5rem rgba(0, 0, 0, 0.3);
+    border-color: var(--tan-green);
+}
+
+.image-item.current {
+    border-color: var(--tan-green);
+}
+
+.image-item.selected {
+    border-color: red;
+}
+
+.image-item img {
+    width: 100%;
+    height: 9.375rem;
+    object-fit: cover;
+}
+
+.image-item .image-name {
+    padding: 0.625rem;
+    text-align: center;
+    font-size: 0.875rem;
+    background-color: var(--background-color);
+    color: var(--tan-green);
+    word-break: break-word;
+}
+
+.image-item .current-badge {
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    background-color: var(--tan-green);
+    color: var(--background-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.image-actions {
+    margin-top: 1.25rem;
+}
+
+.current-image-display {
+    text-align: center;
+    margin-top: 1.25rem;
+    padding: 1.25rem;
+    background-color: var(--background-color);
+    border-radius: 0.75rem;
+    border: 0.125rem solid var(--light-green-alt);
+}
+
+.current-image-display img {
+    max-width: 100%;
+    max-height: 25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.35rem 0.95rem rgba(0, 0, 0, 0.2);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto, minmax(15rem, 1fr));
+    gap: 1.25rem;
+}
+
+@media (max-width: 48rem) {
+    .container {
+        margin: 0.5rem;
+    }
+
+    .settings {
+        padding: 1.25rem;
+    }
+
+    .image-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions,
+    .image-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        margin-right: 0;
+    }
+}

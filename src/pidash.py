@@ -2,9 +2,7 @@
 
 import logging
 import time
-from config import Config
-from refresh_task import RefreshTask
-from display_manager import DisplayManager
+from app import create_app
 
 logging.basicConfig(
     level=logging.INFO,
@@ -12,23 +10,24 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
-logger.info("Running PiDash")
 
 def main():
+    app = create_app()
+    logger.info("Starting PiDash webserver")
+    app.run(host="0.0.0.0", port=80)
+
     try:
-        config = Config()
-        display_manager = DisplayManager(config)
-        refresh_task = RefreshTask(config, display_manager)
-        refresh_task.start()
-        
+        app.config["refresh_manager"].start()
+
         while True:
             time.sleep(1)
             
     except KeyboardInterrupt:
         logger.info("Shutting down...")
-        refresh_task.stop()
     except Exception as e:
-        logger.exception("Fatal error in main loop")
+        logger.error("Fatal error in main loop")
+    finally:
+        app.config["refresh_manager"].stop()
 
 if __name__ == "__main__":
     main()
