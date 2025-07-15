@@ -9,7 +9,7 @@ bp = Blueprint("pidash", __name__)
 def pidash():
     refresh_time = current_app.config["config"].get("refresh_interval")
     orientation = current_app.config["config"].get("orientation")
-    images = current_app.config["image_manager"].getImages()
+    images = current_app.config["image_manager"].get_image_names()
     current_image = images[0]
 
     return render_template("pidash.html",
