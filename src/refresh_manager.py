@@ -1,19 +1,15 @@
 import threading
 import time
 import logging
-from image_manager import ImageManager
 
 logger = logging.getLogger(__name__)
 
-class RefreshTask:
-    """
-    Handles background image rotation using threading.
-    Core component for automatic image cycling.
-    """
-    def __init__(self, config, display_manager):
+class RefreshManager:
+
+    def __init__(self, config, image_manager, display_manager):
         self.config = config
+        self.image_manager = image_manager
         self.display_manager = display_manager
-        self.image_manager = ImageManager(config)
         
         self.thread = None
         self.lock = threading.Lock()
@@ -21,7 +17,6 @@ class RefreshTask:
         self.condition = threading.Condition()
     
     def start(self):
-        """Start the background refresh task."""
         if self.thread and self.thread.is_alive():
             logger.warning("Rotation task already running")
             return
@@ -32,7 +27,6 @@ class RefreshTask:
         logger.info("Refresh task started")
     
     def stop(self):
-        """Stop the refresh task."""
         with self.condition:
             self.running = False
             self.condition.notify_all()
@@ -42,20 +36,15 @@ class RefreshTask:
             logger.info("Refresh task stopped")
     
     def trigger_immediate_refresh(self):
-        """Trigger immediate image refresh (useful for web interface)."""
         with self.condition:
             self.condition.notify_all()
     
     def _run(self):
-        """
-        Background refresh loop.
-        This is the heart of the automatic image cycling.
-        """
         logger.info("Starting refresh loop")
         
         while self.running:
             try:
-                sleep_time = self.config.get("sleep_time", 3600)
+                refresh_interval = self.config.get("refresh_interval", 3600)
 
                 if not self.running:
                     break
@@ -69,14 +58,34 @@ class RefreshTask:
                 
                 with self.condition:
                     if self.running:
-                        self.condition.wait(timeout=sleep_time)
+                        self.condition.wait(timeout=refresh_interval)
                 
             except Exception as e:
-                logger.exception("Error in rotation loop")
+                logger.exception(f"Error in refresh loop: {e}")
                 time.sleep(10)
 
-    def display_next_image(self):
-        image = self.image_manager.get_next_image()
+    def refresh_display(self):
+        image = self.image_manager.get_current_image()
 
         if image:
             self.display_manager.display_image(image)
+        else:
+            logger.warning("Failed to refresh display.")
+
+    def display_next_image(self):
+        image = self.image_manager.get_next_image()
+        self.image_manager.update_image_index()
+
+        if image:
+            self.display_manager.display_image(image)
+        else:
+            logger.warning("Failed to display next image.")
+
+    def display_previous_image(self):
+        image = self.image_manager.get_previouse_image()
+        self.image_manager.update_image_index(increment=False)
+
+        if image:
+            self.display_manager.display_image(image)
+        else:
+            logger.warning("Failed to display previouse image.")
