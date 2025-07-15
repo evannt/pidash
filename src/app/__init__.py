@@ -1,4 +1,5 @@
 import secrets
+import os
 from flask import Flask
 from config import Config
 from image_manager import ImageManager
@@ -9,7 +10,11 @@ from blueprints import config
 from blueprints import display
 
 def create_app():
-    app = Flask(__name__, template_folder="templates")
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    src_dir = os.path.dirname(basedir)
+    app = Flask(__name__, template_folder=os.path.join(src_dir, "templates"), 
+                static_folder=os.path.join(src_dir, "static"))
+    
     app.secret_key = secrets.token_hex(16)
 
     configuration = Config()
