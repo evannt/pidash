@@ -4,7 +4,8 @@ import shutil
 import time
 from typing import List, Optional, Any, Dict, Tuple
 from PIL import Image
-from constants import SUPPORTED_IMAGE_EXTENSIONS, DEFAULT_IMAGE_FOLDER
+from src.constants import SUPPORTED_IMAGE_EXTENSIONS, DEFAULT_IMAGE_FOLDER
+from src.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class ImageManager:
         except Exception:
             return []
 
-    def __init__(self, config: Any) -> None:
+    def __init__(self, config: Config) -> None:
         """
         Initialize the image manager.
         
@@ -175,8 +176,8 @@ class ImageManager:
             logger.error(f"Failed to remove image {image_path}: {str(e)}")
 
     def remove_images(self, image_paths):
-        for image in image_paths:
-            self.remove_image(image)
+        for imagePath in image_paths:
+            self.remove_image(imagePath)
 
     def refresh_image_list(self):
         """Refresh the list of available images and clear cache if needed."""

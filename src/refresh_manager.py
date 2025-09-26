@@ -1,12 +1,15 @@
 import threading
 import time
 import logging
+from src.config import Config
+from src.image_manager import ImageManager
+from src.display_manager import DisplayManager
 
 logger = logging.getLogger(__name__)
 
 class RefreshManager:
 
-    def __init__(self, config, image_manager, display_manager):
+    def __init__(self, config: Config, image_manager: ImageManager, display_manager: DisplayManager):
         self.config = config
         self.image_manager = image_manager
         self.display_manager = display_manager
