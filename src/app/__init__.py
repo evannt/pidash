@@ -1,4 +1,5 @@
 import secrets
+import os
 from flask import Flask
 from config import Config
 from image_manager import ImageManager
@@ -7,9 +8,17 @@ from refresh_manager import RefreshManager
 from blueprints import pidash
 from blueprints import config
 from blueprints import display
+from blueprints import home
+from blueprints import upload
+from blueprints import gallery
+from blueprints import settings
 
 def create_app():
-    app = Flask(__name__)
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    src_dir = os.path.dirname(basedir)
+    app = Flask(__name__, template_folder=os.path.join(src_dir, "templates"), 
+                static_folder=os.path.join(src_dir, "static"))
+    
     app.secret_key = secrets.token_hex(16)
 
     configuration = Config()
@@ -25,5 +34,9 @@ def create_app():
     app.register_blueprint(pidash.bp)
     app.register_blueprint(config.bp)
     app.register_blueprint(display.bp)
+    app.register_blueprint(home.bp)
+    app.register_blueprint(upload.bp)
+    app.register_blueprint(gallery.bp)
+    app.register_blueprint(settings.bp)
 
     return app

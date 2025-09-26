@@ -82,10 +82,10 @@ class RefreshManager:
             logger.warning("Failed to display next image.")
 
     def display_previous_image(self):
-        image = self.image_manager.get_previouse_image()
+        image = self.image_manager.get_previous_image()
         self.image_manager.update_image_index(increment=False)
 
         if image:
             self.display_manager.display_image(image)
         else:
-            logger.warning("Failed to display previouse image.")
+            logger.warning("Failed to display previous image.")

@@ -56,6 +56,34 @@ body {
     font-size: 1.125rem;
 }
 
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem;
+}
+
+.nav a {
+    display: inline-block;
+    color: var(--tan-green);
+    text-decoration: none;
+    margin: 0 1.25rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background-color: var(--red);
+    border-radius: 0.35rem;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    padding: 0 1.5rem;
+}
+
 .settings {
     padding: 2.5rem;
 }
@@ -134,6 +162,11 @@ body {
     margin-bottom: 0.625rem;
     color: var(--tan-green);
     background-color: var(--red);
+}
+
+.btn-active {
+    background-color: var(--background-alt-color);
+    color: var(--background-color);
 }
 
 .btn-primary {

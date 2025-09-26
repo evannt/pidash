@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Gallery - Pidash{% endblock %}
+
+{% block content %}
+    <div class="settings-section">
+        <h2>Image Gallery</h2>
+        <p>Click images to select them.</p>
+        {% if not show_all and total_count and total_count > initial_limit %}
+            <p>Showing first {{ initial_limit }} of {{ total_count }} images.</p>
+            <a class="btn" href="{{ url_for('gallery.home') }}?all=1">Show All</a>
+        {% endif %}
+        
+        {% if images %}
+            <div class="image-gallery">
+                {% for image in images %}
+                    <div class="image-item {{ 'current' if current_image == image else '' }}" 
+                            onclick="toggleSelection(this, '{{ image }}')">
+                        <img src="{{ url_for('static', filename='images/') + image }}" alt="{{ image }}">
+                        <div class="image-name">{{ image }}</div>
+                        {% if current_image == image %}
+                            <div class="current-badge">CURRENT</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="image-actions">
+                <form method="POST" action="{{ url_for('config.change_current_image') }}">
+                    <input type="hidden" id="current-image-input" name="current_image_name" value="">
+                    <button type="submit" id="set-current-image-btn" class="btn" disabled>
+                        Set as Current Image
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('config.remove_images') }}" style="display: inline;">
+                    <input type="hidden" id="remove-images-input" name="removal_image_names" value="">
+                    <button type="submit" id="remove-images-btn" class="btn" disabled
+                            onclick="return confirm('Are you sure you want to remove the selected images?')">
+                        Remove Selected
+                    </button>
+                </form>
+                <form action="{{ url_for('config.remove_all_images') }}" method="POST">
+                    <button class="btn" type="submit">Removal All Images</button>
+                </form>
+            </div>
+        {% else %}
+            <p>No images uploaded yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleSelection(element, imageName) {
+        const isSelected = element.classList.contains("selected");
+        if (isSelected) {
+            element.classList.remove("selected");
+        } else {
+            element.classList.add("selected");
+        }
+        updateButtons();
+    }
+    function updateButtons() {
+        const selected = document.querySelectorAll(".image-item.selected");
+        const selectedImages = Array.from(selected).map(item =>
+            item.querySelector(".image-name").textContent
+        );
+        const setCurrentBtn = document.getElementById("set-current-image-btn");
+        const currentInput = document.getElementById("current-image-input");
+        if (setCurrentBtn && currentInput) {
+            if (selectedImages.length === 1) {
+                setCurrentBtn.removeAttribute("disabled");
+                currentInput.value = selectedImages[0];
+            } else {
+                setCurrentBtn.setAttribute("disabled", "disabled");
+                currentInput.value = "";
+            }
+        }
+        const removeBtn = document.getElementById("remove-images-btn");
+        const removeInput = document.getElementById("remove-images-input");
+        if (removeBtn && removeInput) {
+            if (selectedImages.length > 0) {
+                removeBtn.removeAttribute("disabled");
+                removeInput.value = selectedImages.join(",");
+            } else {
+                removeBtn.setAttribute("disabled", "disabled");
+                removeInput.value = "";
+            }
+        }
+    }
+</script>
+{% endblock %}
