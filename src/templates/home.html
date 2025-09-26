@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Pidash{% endblock %}
+
+{% block content %}
+    <div class="settings-section">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+            <form action="{{ url_for('display.refresh_screen') }}" method="POST">
+                <button class="btn" type="submit">Refresh Screen</button>
+            </form>
+            <form action="{{ url_for('display.show_next_image') }}" method="POST">
+                <button class="btn" type="submit">Show Next Image</button>
+            </form>
+            <form action="{{ url_for('display.show_previous_image') }}" method="POST">
+                <button class="btn" type="submit">Show Previous Image</button>
+            </form>
+            <form action="{{ url_for('config.remove_all_images') }}" method="POST" style="display: inline;" onclick="return confirm('Remove all images?');">
+                <button class="btn" type="submit">Remove All Images</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="settings-section">
+        <h2>Current Status</h2>
+        <div class="status-grid">
+            <div>Current Image:</div>
+            <div>{{ current_image or 'N/A' }}</div>
+
+            <div>Orientation:</div>
+            <div>{{ orientation or 'N/A' }}</div>
+        
+            <div>Total Images:</div>
+            <div>{{ image_count or 0 }}</div>
+        
+            <div>Auto Refresh:</div>
+            <div>{{ refresh_time / 60 or 'N/A' }} minutes</div>
+        </div>
+    </div>
+{% endblock %}

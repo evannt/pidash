@@ -6,9 +6,9 @@ def compute_image_hash(self, image):
     return hashlib.md5(image.tobytes()).hexdigest()
 
 def change_orientation(image, orientation, inverted=False):
-    if orientation == "horizontal":
+    if orientation == "landscape":
         angle = 0
-    elif orientation == "vertical":
+    elif orientation == "portrait":
         angle = 90
     else:
         angle = 0

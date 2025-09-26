@@ -3,30 +3,30 @@
 import logging
 import time
 from app import create_app
+from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    datefmt="%H:%M:%S",
+    format=LOG_FORMAT,
+    datefmt=LOG_DATE_FORMAT,
 )
 logger = logging.getLogger(__name__)
 
 def main():
     app = create_app()
     logger.info("Starting PiDash webserver")
-    app.run(host="0.0.0.0", port=80)
-
+    
     try:
         app.config["refresh_manager"].start()
-
-        while True:
-            time.sleep(1)
+        logger.info("Refresh manager started")
+        app.run(host=DEFAULT_HOST, port=DEFAULT_PORT)
             
     except KeyboardInterrupt:
         logger.info("Shutting down...")
     except Exception as e:
-        logger.error("Fatal error in main loop")
+        logger.error(f"Fatal error in main loop: {e}")
     finally:
+        logger.info("Stopping refresh manager...")
         app.config["refresh_manager"].stop()
 
 if __name__ == "__main__":

@@ -2,14 +2,29 @@
 <html lang="en">
 
 <head>
-    {% block head %}
-    <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
+    <title>{% block title %}Pidash{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 
 <body>
-    <div id="content">
-        {% block content %}{% endblock %}
+    <div class="container">
+        <div class="header">
+            <h1>Pidash Manager</h1>
+            <p>Manage your images and display settings</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="{{ url_for('home.home') }}" class="btn {{ 'btn-active' if request.endpoint == 'home.home' else '' }} ">Home</a>
+            <a href="{{ url_for('settings.home') }}" class="btn {{ 'btn-active' if request.endpoint == 'settings.home' else '' }}">Settings</a>
+            <a href="{{ url_for('gallery.home') }}" class="btn {{ 'btn-active' if request.endpoint == 'gallery.home' else '' }}">Gallery</a>
+            <a href="{{ url_for('upload.home') }}" class="btn {{ 'btn-active' if request.endpoint == 'upload.home' else '' }}">Upload</a>
+        </nav>
+        
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        {% block scripts %}{% endblock %}
     </div>
 </body>
 

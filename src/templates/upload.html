@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Upload - Pidash{% endblock %}
+
+{% block content %}
+    <div class="settings-section">
+        <h2>Upload Images</h2>
+        <form action="{{ url_for('config.upload_images') }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="image_upload_names">Select Images:</label>
+                <input type="file" id="image_upload_names" name="image_upload_names" multiple accept="image/*" required>
+            </div>
+            <button class="btn" type="submit">Upload Images</button>
+        </form>
+    </div>
+{% endblock %}

@@ -23,13 +23,16 @@ class DisplayManager:
         if not image:
             raise ValueError(f"No image provided.")
         
-        image = change_orientation(image, self.config.get("orientation"))
-        image = resize_image(image, self.config.get("resolution"), image_settings)
-        if self.config.get("inverted_image"): image = image.rotate(180)
-        image = apply_image_enhancement(image, self.config.get("image_settings"))
-
         try:
+            image = change_orientation(image, self.config.get("orientation"))
+            image = resize_image(image, self.config.get("resolution"), image_settings)
+            if self.config.get("inverted_image"): 
+                image = image.rotate(180)
+            image = apply_image_enhancement(image, self.config.get("image_settings"))
+
             self.inky_display.set_image(image)
             self.inky_display.show()
+            logger.info("Image displayed successfully")
         except Exception as e:
             logger.error(f"Failed to display image: {e}")
+            raise

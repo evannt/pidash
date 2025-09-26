@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Settings - Pidash{% endblock %}
+
+{% block content %}
+    <div class="settings-section">
+        <h2>Display Settings</h2>
+        <form id="display-settings" action="{{ url_for('config.update_config') }}" method="POST">
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="refresh_time">Auto Refresh Time:</label>
+                    <div class="time-input-container">
+                        <input type="number" id="refresh_time" name="refresh_time" value="{{ refresh_time // 60 }}" min="1">
+                        <select name="time_unit" id="time_unit">
+                            <option value="minutes" selected>Minutes</option>
+                            <option value="hours">Hours</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="orientation">Display Orientation:</label>
+                    <select id="orientation" name="orientation">
+                        <option value="landscape" {{ 'selected' if orientation == 'landscape' else '' }}>
+                            Landscape
+                        </option>
+                        <option value="portrait" {{ 'selected' if orientation == 'portrait' else '' }}>
+                            Portrait
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn" type="submit">Update Settings</button>
+        </form>
+    </div>
+{% endblock %}
