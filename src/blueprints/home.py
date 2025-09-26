@@ -8,11 +8,10 @@ bp = Blueprint("home", __name__)
 @bp.route("/home")
 def home():
     cfg = current_app.config["config"]
-    refresh_time = cfg.get("refresh_interval", 900)  # seconds
+    refresh_time = cfg.get("refresh_interval", 900)
     orientation = cfg.get("orientation", "landscape")
     images_dir = cfg.get("image_folder")
     current_image_index = cfg.get("current_image_index", 0)
-
 
     # Use config value for image folder, fallback to hardcoded path for testing
     image_folder = os.path.abspath(images_dir) if images_dir else os.path.abspath("src/static/images")

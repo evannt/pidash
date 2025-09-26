@@ -10,6 +10,7 @@ from blueprints import settings
 from blueprints import display
 from config import Config
 
+# Test app designed for local development
 def create_app():
     basedir = os.path.abspath(os.path.dirname(__file__))
     src_dir = os.path.dirname(basedir)
@@ -41,12 +42,10 @@ def create_app():
         def stop(self):
             return True
 
-    # Inject real config and stubs so endpoints work as-is
     app.config["config"] = real_config
     app.config["image_manager"] = DummyImageManager()
     app.config["refresh_manager"] = DummyRefreshManager()
 
-    # Register blueprints
     app.register_blueprint(pidash.bp)
     app.register_blueprint(config.bp)
     app.register_blueprint(display.bp)

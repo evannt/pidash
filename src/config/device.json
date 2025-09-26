@@ -1,15 +1,15 @@
 {
-    "name": "PiDash",
-    "image_folder": "src/static/images",
-    "orientation": "langscape",
-    "inverted_image": false,
-    "refresh_interval": 900,
-    "startup": true,
-    "current_image_index": 0,
-    "image_settings": {
-        "brightness": 1.0,
-        "contrast": 1.0,
-        "saturation": 1.0,
-        "sharpness": 1.0
-    }
+  "name": "PiDash",
+  "image_folder": "src/static/images",
+  "orientation": "landscape",
+  "inverted_image": false,
+  "refresh_interval": 900,
+  "startup": true,
+  "current_image_index": 0,
+  "image_settings": {
+    "brightness": 1.0,
+    "contrast": 1.0,
+    "saturation": 1.0,
+    "sharpness": 1.0
+  }
 }

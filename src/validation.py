@@ -8,7 +8,7 @@ and configuration values to prevent security issues and data corruption.
 import re
 import os
 from typing import Any, Optional, Tuple, List
-from constants import VALID_ORIENTATIONS, MIN_REFRESH_INTERVAL, MAX_REFRESH_INTERVAL
+from src.constants import VALID_ORIENTATIONS, MIN_REFRESH_INTERVAL, MAX_REFRESH_INTERVAL
 
 
 class ValidationError(Exception):
@@ -32,13 +32,11 @@ def sanitize_filename(filename: str) -> str:
     if not filename:
         raise ValidationError("Filename cannot be empty")
     
-    # Remove path separators and dangerous characters
     dangerous_chars = ['..', '/', '\\', ':', '*', '?', '"', '<', '>', '|']
     for char in dangerous_chars:
         if char in filename:
             raise ValidationError(f"Filename contains dangerous character: {char}")
     
-    # Limit filename length
     if len(filename) > 255:
         raise ValidationError("Filename too long (max 255 characters)")
     
@@ -175,16 +173,13 @@ def validate_path(path: str, allow_absolute: bool = False) -> str:
     
     path = path.strip()
     
-    # Check for path traversal attempts
     if '..' in path:
         raise ValidationError("Path traversal not allowed")
     
-    # Check for absolute paths if not allowed
     if not allow_absolute and os.path.isabs(path):
         raise ValidationError("Absolute paths not allowed")
     
-    # Check path length
-    if len(path) > 4096:  # Common filesystem limit
+    if len(path) > 4096:
         raise ValidationError("Path too long")
     
     return path
