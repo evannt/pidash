@@ -1,5 +1,5 @@
 import logging
-from image_utils import resize_image, change_orientation, apply_image_enhancement
+from src.image_utils import resize_image, change_orientation, apply_image_enhancement
 from PIL import Image
 from inky.auto import auto
 from src.config import Config

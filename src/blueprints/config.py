@@ -11,12 +11,12 @@ from flask import (
     Blueprint, current_app, flash, redirect, request, url_for
 )
 from werkzeug.utils import secure_filename
-from constants import (
+from src.constants import (
     MAX_FILE_SIZE_BYTES, ALLOWED_MIME_TYPES, SUPPORTED_IMAGE_EXTENSIONS,
     MIN_REFRESH_INTERVAL, MAX_REFRESH_INTERVAL, VALID_ORIENTATIONS,
     SECONDS_PER_MINUTE, SECONDS_PER_HOUR
 )
-from validation import (
+from src.validation import (
     ValidationError, validate_refresh_interval, validate_orientation,
     sanitize_filename, validate_image_settings
 )

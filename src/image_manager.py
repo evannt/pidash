@@ -2,7 +2,7 @@ import os
 import logging
 import shutil
 import time
-from typing import List, Optional, Any, Dict, Tuple
+from typing import List, Optional, Dict, Tuple
 from PIL import Image
 from src.constants import SUPPORTED_IMAGE_EXTENSIONS, DEFAULT_IMAGE_FOLDER
 from src.config import Config

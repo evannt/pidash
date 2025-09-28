@@ -1,14 +1,14 @@
 import secrets
 import os
 from flask import Flask, render_template
-from blueprints import pidash
-from blueprints import config
-from blueprints import home
-from blueprints import upload
-from blueprints import gallery
-from blueprints import settings
-from blueprints import display
-from config import Config
+from src.blueprints import pidash
+from src.blueprints import config
+from src.blueprints import home
+from src.blueprints import upload
+from src.blueprints import gallery
+from src.blueprints import settings
+from src.blueprints import display
+from src.config import Config
 
 # Test app designed for local development
 def create_app():
