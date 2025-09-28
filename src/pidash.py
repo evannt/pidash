@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging
-import time
 from app import create_app
 from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT
 
