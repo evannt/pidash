@@ -13,7 +13,6 @@ RestartSec=15
 KillSignal=SIGINT
 StandardOutput=journal
 StandardError=journal
-Environment="PROJECT_DIR=/path/to/project"
 
 [Install]
 WantedBy=multi-user.target
