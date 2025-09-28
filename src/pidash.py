@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import socket
 import logging
 from app import create_app
+from waitress import serve
 from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT
 
 logging.basicConfig(
@@ -11,14 +13,34 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def get_network_info():
+    hostname = socket.gethostname()
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+    except Exception:
+        local_ip = "127.0.0.1"
+    
+    return hostname, local_ip
 def main():
     app = create_app()
     logger.info("Starting PiDash webserver")
     
+    hostname, local_ip = get_network_info()
+    
     try:
         app.config["refresh_manager"].start()
         logger.info("Refresh manager started")
-        app.run(host=DEFAULT_HOST, port=DEFAULT_PORT)
+
+        logger.info("Running in production mode with Waitress")
+        logger.info(f"Access at: http://localhost:{DEFAULT_PORT} or http://{local_ip}:{DEFAULT_PORT}")
+        serve(app, 
+                host=DEFAULT_HOST, 
+                port=DEFAULT_PORT,
+                threads=4,
+                connection_limit=100)
             
     except KeyboardInterrupt:
         logger.info("Shutting down...")
