@@ -1,5 +1,15 @@
 import secrets
 import os
+import sys
+print("=== DEBUG INFO ===")
+print(f"Current working directory: {os.getcwd()}")
+print(f"Script location: {__file__}")
+print(f"Script directory: {os.path.dirname(os.path.abspath(__file__))}")
+print(f"Python path:")
+for path in sys.path:
+    print(f"  - {path}")
+print(f"PYTHONPATH env: {os.environ.get('PYTHONPATH', 'Not set')}")
+print("==================")
 from flask import Flask
 from src.config import Config
 from src.image_manager import ImageManager

@@ -12,6 +12,8 @@ export SRC_DIR="$PROGRAM_PATH/src"
 
 cd "$PROGRAM_PATH"
 
+export PYTHONPATH="$PROGRAM_PATH:$PROGRAM_PATH/src:$PYTHONPATH"
+
 python -u "src/pidash.py" "$@"
 
 deactivate

@@ -13,7 +13,7 @@ VENV_PATH="$INSTALL_PATH/venv_$APPNAME"
 SERVICE_FILE="/etc/systemd/system/$APPNAME.service"
 CONFIG_DIR="$INSTALL_PATH/src/config"
 
-echo_succes () {
+echo_success () {
   echo -e "$1 [\e[32m\xE2\x9C\x94\e[0m]"
 }
 
