@@ -2,15 +2,15 @@
 
 E-ink display for the InkyImpression powered by a raspberr pi.
 
-# Hardware
+## Hardware
 
-# Installation
+## Installation
 
-# Update
+## Update
 
-# Uninstall
+## Uninstall
 
-# License
+## License
 
-# Acknowledgements
+## Acknowledgements
 
