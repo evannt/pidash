@@ -1,27 +1,12 @@
 import secrets
 import os
 import sys
-print("=== DEBUG INFO ===")
-print(f"Current working directory: {os.getcwd()}")
-print(f"Script location: {__file__}")
-print(f"Script directory: {os.path.dirname(os.path.abspath(__file__))}")
-print(f"Python path:")
-for path in sys.path:
-    print(f"  - {path}")
-print(f"PYTHONPATH env: {os.environ.get('PYTHONPATH', 'Not set')}")
-print("==================")
 from flask import Flask
-from src.config import Config
-from src.image_manager import ImageManager
-from src.display_manager import DisplayManager
-from src.refresh_manager import RefreshManager
-from src.blueprints import pidash
-from src.blueprints import config
-from src.blueprints import display
-from src.blueprints import home
-from src.blueprints import upload
-from src.blueprints import gallery
-from src.blueprints import settings
+from config import Config
+from image_manager import ImageManager
+from display_manager import DisplayManager
+from refresh_manager import RefreshManager
+from blueprints import (pidash,config,display,home,upload,gallery,settings)
 
 def create_app():
     basedir = os.path.abspath(os.path.dirname(__file__))
