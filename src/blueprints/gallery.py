@@ -2,31 +2,29 @@ import os
 from flask import (
     Blueprint, current_app, render_template, request
 )
+from src.constants import (
+    CONFIG_KEY, IMAGE_MANAGER_KEY, DEFAULT_GALLERY_LIMIT, CURRENT_IMAGE_INDEX_KEY
+)
 
 bp = Blueprint("gallery", __name__)
 
 @bp.route("/gallery")
 def home():
-    cfg = current_app.config["config"]
-    orientation = cfg.get("orientation")
-    refresh_interval = cfg.get("refresh_interval")
-    images_dir = cfg.get("image_folder")
-
-    image_folder = os.path.abspath(images_dir) if images_dir else os.path.abspath("src/static/images")
+    config = current_app.config[CONFIG_KEY]
+    image_manager = current_app.config[IMAGE_MANAGER_KEY]
     try:
-        from image_manager import ImageManager
-        images = ImageManager.list_supported_images_in_dir(image_folder)
+        images = image_manager.get_image_names()
     except Exception:
         images = []
 
     show_all = request.args.get("all") == "1"
-    initial_limit = 24
-    visible_images = images if show_all else images[:initial_limit]
+    current_index = config.get(CURRENT_IMAGE_INDEX_KEY)
+    visible_images = images if show_all else images[current_index:current_index + min(DEFAULT_GALLERY_LIMIT, len(images))]
+    current_image = image_manager.get_current_image()
 
-    current_image = images[0] if images else None
     return render_template("gallery.html",
                            images=visible_images,
                            current_image=current_image,
                            total_count=len(images),
                            show_all=show_all,
-                           initial_limit=initial_limit)
+                           gallery_limit=DEFAULT_GALLERY_LIMIT)

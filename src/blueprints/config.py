@@ -1,24 +1,18 @@
 import os
 import tempfile
+import magic
 from PIL import Image
-
-try:
-    import magic
-    MAGIC_AVAILABLE = True
-except ImportError:
-    MAGIC_AVAILABLE = False
 from flask import (
     Blueprint, current_app, flash, redirect, request, url_for
 )
 from werkzeug.utils import secure_filename
 from src.constants import (
     MAX_FILE_SIZE_BYTES, ALLOWED_MIME_TYPES, SUPPORTED_IMAGE_EXTENSIONS,
-    MIN_REFRESH_INTERVAL, MAX_REFRESH_INTERVAL, VALID_ORIENTATIONS,
-    SECONDS_PER_MINUTE, SECONDS_PER_HOUR
+    SECONDS_PER_MINUTE, SECONDS_PER_HOUR, ORIENTATION_KEY, REFRESH_INTERVAL_KEY,
+    CONFIG_KEY, IMAGE_MANAGER_KEY, REFRESH_MANAGER_KEY
 )
 from src.validation import (
-    ValidationError, validate_refresh_interval, validate_orientation,
-    sanitize_filename, validate_image_settings
+    ValidationError, validate_refresh_interval, validate_orientation
 )
 
 bp = Blueprint("config", __name__)
@@ -33,18 +27,16 @@ def validate_uploaded_file(file_path, filename):
         file_ext = os.path.splitext(filename)[1].lower()
         if file_ext not in SUPPORTED_IMAGE_EXTENSIONS:
             return False, f"File type {file_ext} not allowed"
-        
-        if MAGIC_AVAILABLE:
-            try:
-                mime_type = magic.from_file(file_path, mime=True)
-                if mime_type not in ALLOWED_MIME_TYPES:
-                    return False, f"MIME type {mime_type} not allowed"
-            except Exception:
-                pass
-        
+
+        mime = magic.from_file(file_path, mime=True)
+        if mime not in ALLOWED_MIME_TYPES:
+            return False, f"Invalid file format (detected: {mime})" 
+
         try:
             with Image.open(file_path) as img:
                 img.verify()
+            with Image.open(file_path) as img:
+                img.load()
             return True, "File validation successful"
         except Exception as e:
             return False, f"Invalid image file: {str(e)}"
@@ -54,19 +46,21 @@ def validate_uploaded_file(file_path, filename):
 
 @bp.post("/update_config")
 def update_config():
+    config = current_app.config[CONFIG_KEY]
+
     has_errors = False
 
-    if "refresh_time" in request.form and "time_unit" in request.form:
+    if "refresh_interval" in request.form and "time_unit" in request.form:
         try:
-            value = int(request.form.get("refresh_time", "0"))
-            unit = request.form.get("time_unit", "minutes").lower()
+            value = int(request.form.get("refresh_interval"))
+            unit = request.form.get("time_unit").lower()
             if unit == "hours":
                 refresh_interval = value * SECONDS_PER_HOUR
             else:
                 refresh_interval = value * SECONDS_PER_MINUTE
             
             validated_interval = validate_refresh_interval(refresh_interval)
-            current_app.config["config"].set("refresh_interval", validated_interval, save=True)
+            config.set(REFRESH_INTERVAL_KEY, validated_interval, save=True)
         except ValidationError as e:
             flash(str(e), "error")
             has_errors = True
@@ -76,11 +70,10 @@ def update_config():
 
     if "orientation" in request.form:
         try:
-            orientation = request.form["orientation"]
-            validated_orientation = validate_orientation(orientation)
-            prev_orientation = current_app.config["config"].get("orientation")
+            validated_orientation = validate_orientation(request.form["orientation"])
+            prev_orientation = config.get(ORIENTATION_KEY)
             if prev_orientation != validated_orientation:
-                current_app.config["config"].set("orientation", validated_orientation, save=True)
+                config.set(ORIENTATION_KEY, validated_orientation, save=True)
         except ValidationError as e:
             flash(str(e), "error")
             has_errors = True
@@ -88,15 +81,18 @@ def update_config():
     if has_errors:
         flash("Some settings could not be updated due to errors", "error")
 
-    current_app.config["refresh_manager"].refresh_display()
+    _refresh_display()
 
     return redirect(request.referrer or url_for("home.home"))
 
 @bp.post("/upload_images")
 def upload_images():
+    config = current_app.config[CONFIG_KEY]
+    image_manager = current_app.config[IMAGE_MANAGER_KEY]
+
     files = request.files.getlist("image_upload_names")
     
-    if not files or files[0].filename == "":
+    if not files:
         flash("No files selected", "error")
         return redirect(request.referrer or url_for("home.home"))
     
@@ -105,39 +101,36 @@ def upload_images():
     
     for file in files:
         if file and file.filename:
-            try:
-                filename = sanitize_filename(file.filename)
-                secure_name = secure_filename(filename)
-                if secure_name != filename:
-                    flash(f"Filename contains unsafe characters: {filename}", "error")
-                    rejected_count += 1
-                    continue
-            except ValidationError as e:
-                flash(f"Invalid filename: {str(e)}", "error")
-                rejected_count += 1
-                continue
+            safe_filename = secure_filename(file.filename)
+            tmp_path = None
             
-            with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1]) as tmp_file:
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.tmp') as tmp_file:
+                tmp_path = tmp_file.name
                 file.save(tmp_file.name)
                 
                 try:
-                    is_valid, message = validate_uploaded_file(tmp_file.name, filename)
-                    
+                    is_valid, message = validate_uploaded_file(tmp_path, safe_filename)
+
                     if is_valid:
-                        current_app.config["image_manager"].add_image(tmp_file.name)
-                        uploaded_count += 1
+                        success = image_manager.add_image(tmp_path, safe_filename)
+                        if success:
+                            uploaded_count += 1
+                        else:
+                            flash(f"Failed to save {safe_filename}", "error")
+                            rejected_count += 1
                     else:
-                        flash(f"Rejected {filename}: {message}", "error")
+                        flash(f"Rejected {safe_filename}: {message}", "error")
                         rejected_count += 1
                         
                 except Exception as e:
-                    flash(f"Failed to upload {filename}: {str(e)}", "error")
+                    flash(f"Failed to upload {safe_filename}: {str(e)}", "error")
                     rejected_count += 1
                 finally:
-                    try:
-                        os.unlink(tmp_file.name)
-                    except Exception:
-                        pass
+                    if tmp_path and os.path.exists(tmp_path):
+                        try:
+                            os.unlink(tmp_path)
+                        except Exception:
+                            pass
     
     if uploaded_count > 0:
         flash(f"Successfully uploaded {uploaded_count} image(s)", "success")
@@ -148,6 +141,8 @@ def upload_images():
 
 @bp.post("/remove_images")
 def remove_images():
+    image_manager = current_app.config[IMAGE_MANAGER_KEY]
+
     image_names = request.form.get("removal_image_names", "").split(",")
     image_names = [name.strip() for name in image_names if name.strip()]
     
@@ -159,7 +154,7 @@ def remove_images():
     
     for image_name in image_names:
         try:
-            current_app.config["image_manager"].remove_image(image_name)
+            image_manager.remove_image(image_name)
             removed_count += 1
         except Exception as _:
             flash(f"Failed to remove {image_name}", "error")
@@ -167,13 +162,13 @@ def remove_images():
     if removed_count > 0:
         flash(f"Removed {removed_count} image(s)", "success")
 
-    current_app.config["refresh_manager"].refresh_display()
+    _refresh_display()
     
     return redirect(request.referrer or url_for("home.home"))
 
 @bp.post("/remove_all_images")
 def remove_all_images():
-    current_app.config["image_manager"].remove_all_images()
+    current_app.config[IMAGE_MANAGER_KEY].remove_all_images()
     return redirect(request.referrer or url_for("home.home"))
 
 @bp.post("/change_current_image")
@@ -184,6 +179,10 @@ def change_current_image():
         flash("No image selected", "error")
         return redirect(request.referrer or url_for("home.home"))
 
-    current_app.config["image_manager"].set_current_image(image_name)
-    current_app.config["refresh_manager"].refresh_display()
+    current_app.config[IMAGE_MANAGER_KEY].set_current_image(image_name)
+    _refresh_display()
+
     return redirect(request.referrer or url_for("home.home"))
+
+def _refresh_display():
+    current_app.config[REFRESH_MANAGER_KEY].refresh_display()

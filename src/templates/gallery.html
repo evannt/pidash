@@ -5,8 +5,8 @@
     <div class="settings-section">
         <h2>Image Gallery</h2>
         <p>Click images to select them.</p>
-        {% if not show_all and total_count and total_count > initial_limit %}
-            <p>Showing first {{ initial_limit }} of {{ total_count }} images.</p>
+        {% if not show_all and total_count and total_count > gallery_limit %}
+            <p>Showing first {{ gallery_limit }} of {{ total_count }} images.</p>
             <a class="btn" href="{{ url_for('gallery.home') }}?all=1">Show All</a>
         {% endif %}
         

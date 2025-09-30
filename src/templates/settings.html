@@ -7,9 +7,9 @@
         <form id="display-settings" action="{{ url_for('config.update_config') }}" method="POST">
             <div class="settings-grid">
                 <div class="form-group">
-                    <label for="refresh_time">Auto Refresh Time:</label>
+                    <label for="refresh_interval">Auto Refresh Time:</label>
                     <div class="time-input-container">
-                        <input type="number" id="refresh_time" name="refresh_time" value="{{ refresh_time // 60 }}" min="1">
+                        <input type="number" id="refresh_interval" name="refresh_interval" value="{{ refresh_interval // 60 }}" min="1">
                         <select name="time_unit" id="time_unit">
                             <option value="minutes" selected>Minutes</option>
                             <option value="hours">Hours</option>

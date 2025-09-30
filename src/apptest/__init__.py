@@ -1,14 +1,17 @@
 import secrets
 import os
+import logging
 from flask import Flask, render_template
-from blueprints import pidash
-from blueprints import config
-from blueprints import home
-from blueprints import upload
-from blueprints import gallery
-from blueprints import settings
-from blueprints import display
-from config import Config
+from src.blueprints import pidash
+from src.blueprints import config
+from src.blueprints import home
+from src.blueprints import upload
+from src.blueprints import gallery
+from src.blueprints import settings
+from src.blueprints import display
+from src.config import Config
+from src.image_manager import ImageManager
+from src.constants import CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, LOG_FORMAT, LOG_DATE_FORMAT
 
 # Test app designed for local development
 def create_app():
@@ -18,18 +21,11 @@ def create_app():
                 static_folder=os.path.join(src_dir, "static"))
     app.secret_key = secrets.token_hex(16)
 
-    real_config = Config()
-
-    class DummyImageManager:
-        def add_image(self, path):
-            return True
-        def remove_image(self, name):
-            return True
-        def remove_all_images(self):
-            return True
-        def set_current_image(self, name):
-            return True
-
+    logging.basicConfig(
+        level=logging.INFO,
+        format=LOG_FORMAT,
+        datefmt=LOG_DATE_FORMAT,
+    )
     class DummyRefreshManager:
         def refresh_display(self):
             return True
@@ -42,9 +38,10 @@ def create_app():
         def stop(self):
             return True
 
-    app.config["config"] = real_config
-    app.config["image_manager"] = DummyImageManager()
-    app.config["refresh_manager"] = DummyRefreshManager()
+    configuration = Config()
+    app.config[CONFIG_KEY] = configuration
+    app.config[IMAGE_MANAGER_KEY] = ImageManager(configuration)
+    app.config[DISPLAY_MANAGER_KEY] = DummyRefreshManager()
 
     app.register_blueprint(pidash.bp)
     app.register_blueprint(config.bp)

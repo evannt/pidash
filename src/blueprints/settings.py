@@ -8,6 +8,9 @@ bp = Blueprint("settings", __name__)
 @bp.route("/settings")
 def home():
     cfg = current_app.config["config"]
-    refresh_time = cfg.get("refresh_interval", 900)
+    refresh_interval = cfg.get("refresh_interval", 900)
     orientation = cfg.get("orientation", "landscape")
-    return render_template("settings.html", refresh_time=refresh_time, orientation=orientation)
+
+    return render_template("settings.html",
+                           refresh_interval=refresh_interval,
+                           orientation=orientation)
