@@ -87,10 +87,10 @@ class ImageManager:
             logger.error(f"Failed to add image {image_path}: {str(e)}")
             return False
 
-    def remove_all_images(self):
+    def remove_all_images(self) -> None:
         self.remove_images(self.get_image_names())
 
-    def remove_image(self, image_path):
+    def remove_image(self, image_path) -> bool:
         if not os.path.exists(self.image_folder):
             logger.warning(f"Image folder {self.image_folder} doesn't exist.")
             return False
@@ -125,11 +125,11 @@ class ImageManager:
             logger.error(f"Failed to remove image {full_path}: {str(e)}")
             return False
 
-    def remove_images(self, image_paths):
+    def remove_images(self, image_paths) -> None:
         for imagePath in image_paths:
             self.remove_image(imagePath)
 
-    def refresh_image_list(self):
+    def refresh_image_list(self) -> None:
         """Refresh the list of available images and clear cache if needed."""
         if not os.path.exists(self.image_folder):
             logger.warning(f"Image folder {self.image_folder} doesn't exist. Creating it.")
@@ -149,26 +149,27 @@ class ImageManager:
         
         if self.current_index >= len(self.image_files):
             self.current_index = 0
-    
-    def set_current_image(self, image_name):
+
+    def get_current_image_name(self) -> str:
+        image_path =self.get_current_image()
+        if not image_path:
+            logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
+            return None
+        return os.path.basename(image_path)
+
+    def set_current_image(self, image_name) -> None:
         for i, img_name in enumerate(self.get_image_names()):
             if image_name == img_name:
                 self.current_index = i
                 self.config.set(CURRENT_IMAGE_INDEX_KEY, i)
                 break
 
-    def get_current_image(self):
+    def get_current_image(self) -> str:
         if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
             return None
-        return self.image_files[self.current_index]
-
-    def get_current_image_name(self):
-        image_path =self.get_current_image()
-        if not image_path:
-            logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
-            return None
-        return os.path.basename(image_path)
+        logger.info(f"Current image index: {self.images_files[self.current_index]}")
+        return Image.open(self.image_files[self.current_index])
 
     def get_next_image(self) -> Optional[Image.Image]:
         """
@@ -222,12 +223,12 @@ class ImageManager:
             logger.error(f"Error loading image {image_path}: {e}")
             return None
         
-    def update_image_index(self, increment: bool = True):
+    def update_image_index(self, increment: bool = True) -> None:
         if increment:
             self.current_index = (self.current_index + 1) % len(self.image_files)
         else:
             self.current_index = (self.current_index - 1) % len(self.image_files)
         self.config.set(CURRENT_IMAGE_INDEX_KEY, self.current_index)
 
-    def get_image_count(self):
+    def get_image_count(self) -> int:
         return len(self.image_files)

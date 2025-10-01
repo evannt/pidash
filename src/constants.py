@@ -6,7 +6,7 @@ to improve maintainability and reduce duplication.
 """
 
 # File and path constants
-DEFAULT_IMAGE_FOLDER = "static/images"
+DEFAULT_IMAGE_FOLDER = "src/static/images"
 DEFAULT_CONFIG_FILE = "device.json"
 CONFIG_DIR = "config"
 
@@ -18,6 +18,7 @@ INVERTED_IMAGE_KEY = "inverted_image"
 REFRESH_INTERVAL_KEY = "refresh_interval"
 CURRENT_IMAGE_INDEX_KEY = "current_image_index"
 IMAGE_SETTINGS_KEY = "image_settings"
+RESOLUTION_KEY = "resolution"
 
 CONFIG_KEY = "config"
 IMAGE_MANAGER_KEY = "image_manager"

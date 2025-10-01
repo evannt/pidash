@@ -7,7 +7,7 @@ from waitress import serve
 from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format=LOG_FORMAT,
     datefmt=LOG_DATE_FORMAT,
 )

@@ -20,7 +20,7 @@ def home():
     show_all = request.args.get("all") == "1"
     current_index = config.get(CURRENT_IMAGE_INDEX_KEY)
     visible_images = images if show_all else images[current_index:current_index + min(DEFAULT_GALLERY_LIMIT, len(images))]
-    current_image = image_manager.get_current_image()
+    current_image = image_manager.get_current_image_name()
 
     return render_template("gallery.html",
                            images=visible_images,

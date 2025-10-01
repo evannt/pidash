@@ -3,8 +3,7 @@ import json
 import logging
 from typing import Any, Dict
 from src.constants import (
-    DEFAULT_CONFIG_FILE, CONFIG_DIR, DEFAULT_ORIENTATION, 
-    DEFAULT_REFRESH_INTERVAL, DEFAULT_IMAGE_FOLDER
+    DEFAULT_CONFIG_FILE, CONFIG_DIR 
 )
 
 logger = logging.getLogger(__name__)
