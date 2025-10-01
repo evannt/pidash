@@ -151,11 +151,10 @@ class ImageManager:
             self.current_index = 0
 
     def get_current_image_name(self) -> str:
-        image_path =self.get_current_image()
-        if not image_path:
+        if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
             return None
-        return os.path.basename(image_path)
+        return os.path.basename(self.image_files[self.current_index])
 
     def set_current_image(self, image_name) -> None:
         for i, img_name in enumerate(self.get_image_names()):
