@@ -164,11 +164,11 @@ class ImageManager:
                 self.config.set(CURRENT_IMAGE_INDEX_KEY, i)
                 break
 
-    def get_current_image(self) -> str:
+    def get_current_image(self) -> Image.Image:
         if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
             return None
-        logger.info(f"Current image index: {self.images_files[self.current_index]}")
+        logger.info(f"Current image index: {self.image_files[self.current_index]}")
         return Image.open(self.image_files[self.current_index])
 
     def get_next_image(self) -> Optional[Image.Image]:
