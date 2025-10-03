@@ -3,8 +3,7 @@
   "image_folder": "src/static/images",
   "orientation": "landscape",
   "inverted_image": false,
-  "refresh_interval": 900,
-  "startup": true,
+  "refresh_interval": 1200,
   "current_image_index": 0,
   "image_settings": {
     "brightness": 1.0,

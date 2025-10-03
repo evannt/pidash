@@ -6,9 +6,24 @@ to improve maintainability and reduce duplication.
 """
 
 # File and path constants
-DEFAULT_IMAGE_FOLDER = "static/images"
+DEFAULT_IMAGE_FOLDER = "src/static/images"
 DEFAULT_CONFIG_FILE = "device.json"
 CONFIG_DIR = "config"
+
+# Config constants
+NAME_KEY = "name"
+IMAGE_FOLDER_KEY = "image_folder"
+ORIENTATION_KEY = "orientation"
+INVERTED_IMAGE_KEY = "inverted_image"
+REFRESH_INTERVAL_KEY = "refresh_interval"
+CURRENT_IMAGE_INDEX_KEY = "current_image_index"
+IMAGE_SETTINGS_KEY = "image_settings"
+RESOLUTION_KEY = "resolution"
+
+CONFIG_KEY = "config"
+IMAGE_MANAGER_KEY = "image_manager"
+REFRESH_MANAGER_KEY = "refresh_manager"
+DISPLAY_MANAGER_KEY = "display_manager"
 
 # Image processing constants
 SUPPORTED_IMAGE_EXTENSIONS = {
@@ -23,13 +38,16 @@ DEFAULT_CONTRAST = 1.0
 DEFAULT_SATURATION = 1.0
 DEFAULT_SHARPNESS = 1.0
 
+# Gallery constants
+DEFAULT_GALLERY_LIMIT = 24
+
 # Time constants (in seconds)
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
 
 # File upload constants
-MAX_FILE_SIZE_MB = 10
+MAX_FILE_SIZE_MB = 16
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 ALLOWED_MIME_TYPES = {
     'image/jpeg', 'image/png', 'image/gif', 'image/bmp', 

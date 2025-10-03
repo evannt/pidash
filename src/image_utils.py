@@ -1,11 +1,11 @@
 import hashlib
 from PIL import Image, ImageEnhance
 
-def compute_image_hash(self, image: Image.Image) -> str:
+def compute_image_hash(image: Image.Image) -> str:
     """Compute hash of image to detect changes."""
     return hashlib.md5(image.tobytes()).hexdigest()
 
-def change_orientation(image, orientation, inverted=False):
+def change_orientation(image: Image.Image, orientation: str, inverted=False):
     if orientation == "landscape":
         angle = 0
     elif orientation == "portrait":
@@ -18,7 +18,7 @@ def change_orientation(image, orientation, inverted=False):
 
     return image.rotate(angle, expand=1)
 
-def resize_image(image: Image.Image, desired_size, image_settings=[]) -> Image.Image:
+def resize_image(image: Image.Image, desired_size: tuple, image_settings=[]) -> Image.Image:
     img_width, img_height = image.size
     desired_width, desired_height = desired_size
     desired_width, desired_height = int(desired_width), int(desired_height)

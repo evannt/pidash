@@ -1,12 +1,13 @@
 import secrets
 import os
-import sys
 from flask import Flask
 from config import Config
 from image_manager import ImageManager
 from display_manager import DisplayManager
 from refresh_manager import RefreshManager
-from blueprints import (pidash,config,display,home,upload,gallery,settings)
+from blueprints import (pidash, config, display, home, upload, gallery, settings)
+from constants import (CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, REFRESH_MANAGER_KEY)
+from waitress import serve
 
 def create_app():
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -21,10 +22,10 @@ def create_app():
     display_manager = DisplayManager(configuration)
     refresh_manager = RefreshManager(configuration, image_manager, display_manager)
 
-    app.config["config"] = configuration
-    app.config["image_manager"] = image_manager
-    app.config["display_manager"] = display_manager
-    app.config["refresh_manager"] = refresh_manager
+    app.config[CONFIG_KEY] = configuration
+    app.config[IMAGE_MANAGER_KEY] = image_manager
+    app.config[DISPLAY_MANAGER_KEY] = display_manager
+    app.config[REFRESH_MANAGER_KEY] = refresh_manager
 
     app.register_blueprint(pidash.bp)
     app.register_blueprint(config.bp)

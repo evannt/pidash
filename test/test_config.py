@@ -20,7 +20,6 @@ def test_default_config_loads():
     assert config.get("orientation") == "landscape"
     assert config.get("inverted_image") == False
     assert config.get("refresh_interval") == 900
-    assert config.get("startup") == True
     assert config.get("current_image_index") == 0
     assert config.get("image_settings") == {
         "brightness": 1.0,
