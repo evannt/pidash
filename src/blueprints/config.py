@@ -87,7 +87,6 @@ def update_config():
 
 @bp.post("/upload_images")
 def upload_images():
-    config = current_app.config[CONFIG_KEY]
     image_manager = current_app.config[IMAGE_MANAGER_KEY]
 
     files = request.files.getlist("image_upload_names")
@@ -162,7 +161,9 @@ def remove_images():
     if removed_count > 0:
         flash(f"Removed {removed_count} image(s)", "success")
 
-    _refresh_display()
+    current_image_name = image_manager.get_current_image_name()
+    if current_image_name in image_names:
+        _refresh_display()
     
     return redirect(request.referrer or url_for("home.home"))
 
