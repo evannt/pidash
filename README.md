@@ -12,17 +12,17 @@ Automatically refreshing slideshow display for the Inky Impression powered by a 
 
 ## Installation
 
-### Clone the repository
+1. Clone the repository
 ``` bash
 git clone https://github.com/evannt/pidash.git
 ```
 
-### Navigate to the project directory
+2. Navigate to the project directory
 ``` bash
 cd pidash
 ```
 
-### Run the install script
+3. Run the install script
 ``` bash
 sudo bash install/install.sh
 ```
