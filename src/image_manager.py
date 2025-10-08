@@ -3,7 +3,7 @@ import logging
 import shutil
 from typing import List, Optional
 from PIL import Image, ImageDraw, ImageFont
-from src.constants import SUPPORTED_IMAGE_EXTENSIONS, IMAGE_FOLDER_KEY, CURRENT_IMAGE_INDEX_KEY, ORIENTATION_KEY
+from src.constants import SUPPORTED_IMAGE_EXTENSIONS, IMAGE_FOLDER_KEY, CURRENT_IMAGE_INDEX_KEY, ORIENTATION_KEY, HOSTNAME_KEY, LOCAL_IP_KEY
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,9 @@ class ImageManager:
         self.image_folder: str = os.path.abspath(os.path.join(self.BASE_DIR, config.get(IMAGE_FOLDER_KEY)))
         self.current_index: int = config.get(CURRENT_IMAGE_INDEX_KEY, 0)
         self.image_files: List[str] = []
-        self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image("", "")
+        hostname = config.get(HOSTNAME_KEY)
+        local_ip = config.get(LOCAL_IP_KEY)
+        self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image(hostname, f"Access the website at http://{hostname} or http://{local_ip}")
         self.refresh_image_list()
 
     def get_image_names(self) -> List[str]:
