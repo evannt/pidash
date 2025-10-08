@@ -56,4 +56,3 @@ sudo bash install/uninstall.sh
 ## License
 
 [GPL-3.0 license](https://github.com/evannt/pidash/blob/main/LICENSE)
-
