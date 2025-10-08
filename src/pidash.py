@@ -4,7 +4,7 @@ import socket
 import logging
 from app import create_app
 from waitress import serve
-from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT, REFRESH_MANAGER_KEY, HOSTNAME_KEY, LOCAL_IP_KEY
+from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT, REFRESH_MANAGER_KEY, CONFIG_KEY, HOSTNAME_KEY, LOCAL_IP_KEY
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -30,8 +30,8 @@ def main():
     
     hostname, local_ip = get_network_info()
 
-    app.config[HOSTNAME_KEY] = hostname
-    app.config[LOCAL_IP_KEY] = local_ip
+    app.config[CONFIG_KEY].set(HOSTNAME_KEY, hostname, save=True)
+    app.config[CONFIG_KEY].set(LOCAL_IP_KEY, local_ip, save=True)
     
     try:
         app.config[REFRESH_MANAGER_KEY].start()
