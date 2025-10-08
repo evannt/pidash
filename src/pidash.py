@@ -25,13 +25,9 @@ def get_network_info():
     
     return hostname, local_ip
 def main():
-    app = create_app()
-    logger.info("Starting PiDash webserver")
-    
     hostname, local_ip = get_network_info()
-
-    app.config[CONFIG_KEY].set(HOSTNAME_KEY, hostname)
-    app.config[CONFIG_KEY].set(LOCAL_IP_KEY, local_ip)
+    app = create_app(hostname, local_ip)
+    logger.info("Starting PiDash webserver")
     
     try:
         app.config[REFRESH_MANAGER_KEY].start()

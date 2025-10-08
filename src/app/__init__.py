@@ -9,7 +9,7 @@ from blueprints import (pidash, config, display, home, upload, gallery, settings
 from constants import (CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, REFRESH_MANAGER_KEY)
 from waitress import serve
 
-def create_app():
+def create_app(hostname=None, local_ip=None):
     basedir = os.path.abspath(os.path.dirname(__file__))
     src_dir = os.path.dirname(basedir)
     app = Flask(__name__, template_folder=os.path.join(src_dir, "templates"), 
@@ -18,6 +18,12 @@ def create_app():
     app.secret_key = secrets.token_hex(16)
 
     configuration = Config()
+
+    if hostname is not None:
+        configuration.set("hostname", hostname)
+    if local_ip is not None:
+        configuration.set("local_ip", local_ip)
+
     image_manager = ImageManager(configuration)
     display_manager = DisplayManager(configuration)
     refresh_manager = RefreshManager(configuration, image_manager, display_manager)
@@ -38,6 +44,6 @@ def create_app():
     return app
 
 if __name__ == "__main__":
-    print("Starting PiDash webserver")
+    print("Starting PiDash webserver in development mode")
     app = create_app()
     serve(app, host="0.0.0.0", port=5000, threads=4)
