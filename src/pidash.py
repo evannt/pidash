@@ -4,7 +4,7 @@ import socket
 import logging
 from app import create_app
 from waitress import serve
-from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT
+from constants import LOG_FORMAT, LOG_DATE_FORMAT, DEFAULT_HOST, DEFAULT_PORT, REFRESH_MANAGER_KEY, HOSTNAME_KEY
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -29,13 +29,15 @@ def main():
     logger.info("Starting PiDash webserver")
     
     hostname, local_ip = get_network_info()
+
+    app.config[HOSTNAME_KEY] = hostname
     
     try:
-        app.config["refresh_manager"].start()
+        app.config[REFRESH_MANAGER_KEY].start()
         logger.info("Refresh manager started")
 
         logger.info("Running in production mode with Waitress")
-        logger.info(f"Access at: http://localhost:{DEFAULT_PORT} or http://{local_ip}:{DEFAULT_PORT}")
+        logger.info(f"Access at: http://{local_ip}:{DEFAULT_PORT} or http://{hostname}:{DEFAULT_PORT}")
         serve(app, 
                 host=DEFAULT_HOST, 
                 port=DEFAULT_PORT,
@@ -48,7 +50,7 @@ def main():
         logger.error(f"Fatal error in main loop: {e}")
     finally:
         logger.info("Stopping refresh manager...")
-        app.config["refresh_manager"].stop()
+        app.config[REFRESH_MANAGER_KEY].stop()
 
 if __name__ == "__main__":
     main()

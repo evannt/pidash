@@ -2,8 +2,8 @@ import os
 import logging
 import shutil
 from typing import List, Optional
-from PIL import Image
-from src.constants import SUPPORTED_IMAGE_EXTENSIONS, IMAGE_FOLDER_KEY, CURRENT_IMAGE_INDEX_KEY
+from PIL import Image, ImageDraw, ImageFont
+from src.constants import SUPPORTED_IMAGE_EXTENSIONS, IMAGE_FOLDER_KEY, CURRENT_IMAGE_INDEX_KEY, ORIENTATION_KEY
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class ImageManager:
         self.image_folder: str = os.path.abspath(os.path.join(self.BASE_DIR, config.get(IMAGE_FOLDER_KEY)))
         self.current_index: int = config.get(CURRENT_IMAGE_INDEX_KEY, 0)
         self.image_files: List[str] = []
-        
+        self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image("", "")
         self.refresh_image_list()
 
     def get_image_names(self) -> List[str]:
@@ -166,7 +166,7 @@ class ImageManager:
     def get_current_image(self) -> Image.Image:
         if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
-            return None
+            return self.get_default_image()
         logger.info(f"Current image index: {self.image_files[self.current_index]}")
         return Image.open(self.image_files[self.current_index])
 
@@ -177,9 +177,10 @@ class ImageManager:
         Returns:
             Optional[Image.Image]: Next image or None if no images available
         """
+        default_image = self.get_default_image()
         if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
-            return None
+            return default_image
         
         try:
             next_image_index = (self.current_index + 1) % len(self.image_files)
@@ -187,14 +188,14 @@ class ImageManager:
             
             if not os.path.exists(image_path):
                 logger.error(f"Image file not found: {image_path}")
-                return None
+                return default_image
                 
             image = Image.open(image_path)
             logger.info(f"Loaded image for display: {os.path.basename(image_path)} ({next_image_index + 1}/{len(self.image_files)})")
             return image
         except Exception as e:
             logger.error(f"Error loading image {image_path}: {e}")
-            return None
+            return default_image
 
     def get_previous_image(self) -> Optional[Image.Image]:
         """
@@ -203,9 +204,10 @@ class ImageManager:
         Returns:
             Optional[Image.Image]: Previous image or None if no images available
         """
+        default_image = self.get_default_image()
         if not self.image_files:
             logger.warning(f"No images were found in {self.config.get(IMAGE_FOLDER_KEY)}.")
-            return None
+            return default_image
         
         try:
             previous_image_index = (self.current_index - 1) % len(self.image_files)
@@ -213,15 +215,18 @@ class ImageManager:
             
             if not os.path.exists(image_path):
                 logger.error(f"Image file not found: {image_path}")
-                return None
+                return default_image
                 
             image = Image.open(image_path)
             logger.info(f"Loaded image for display: {os.path.basename(image_path)} ({previous_image_index + 1}/{len(self.image_files)})")
             return image
         except Exception as e:
             logger.error(f"Error loading image {image_path}: {e}")
-            return None
-        
+            return default_image
+
+    def get_default_image(self) -> Image.Image:
+        return Image.open(self.default_image_landscape_path if self.config.get(ORIENTATION_KEY) == "landscape" else self.default_image_portrait_path)
+
     def update_image_index(self, increment: bool = True) -> None:
         if increment:
             self.current_index = (self.current_index + 1) % len(self.image_files)
@@ -231,3 +236,68 @@ class ImageManager:
 
     def get_image_count(self) -> int:
         return len(self.image_files)
+    
+    def create_default_image(self, main_text: str, sub_text: str, output_dir: str = None, base_filename: str = "default") -> tuple[str, str]:
+        """
+        Create both portrait and landscape versions of an image with centered text.
+        
+        Args:
+            main_text: Text to display on the image
+            output_dir: Directory where images will be saved
+            base_filename: Base name for the files (without extension)
+        
+        Returns:
+            tuple: (landscape_path, portrait_path) - paths to the created files
+        """
+        if output_dir is None:
+            output_dir = self.config.get(IMAGE_FOLDER_KEY) + "/default"
+        os.makedirs(output_dir, exist_ok=True)
+        
+        landscape_size = (800, 400)
+        portrait_size = (400, 800)
+        
+        landscape_path = os.path.join(output_dir, f"{base_filename}_landscape.png")
+        portrait_path = os.path.join(output_dir, f"{base_filename}_portrait.png")
+        
+        self._create_image(main_text, sub_text, landscape_size, landscape_path)
+        self._create_image(main_text, sub_text, portrait_size, portrait_path)
+        
+        return landscape_path, portrait_path
+
+    def _create_image(self, main_text: str, sub_text: str, size: tuple[int, int], output_file: str) -> None:
+        """Helper method to create a single image."""
+        width, height = size
+        img = Image.new("RGB", size, color="gray")
+        draw = ImageDraw.Draw(img)
+        
+        try:
+            main_font = ImageFont.truetype("arial.ttf", 48)
+            sub_font = ImageFont.truetype("arial.ttf", 32)
+        except:
+            main_font = ImageFont.load_default()
+            sub_font = ImageFont.load_default()
+        
+        main_bbox = draw.textbbox((0, 0), main_text, font=main_font)
+        main_width = main_bbox[2] - main_bbox[0]
+        main_height = main_bbox[3] - main_bbox[1]
+        
+        sub_bbox = draw.textbbox((0, 0), sub_text, font=sub_font)
+        sub_width = sub_bbox[2] - sub_bbox[0]
+        sub_height = sub_bbox[3] - sub_bbox[1]
+        
+        spacing = 10
+        
+        total_height = main_height + spacing + sub_height
+        
+        start_y = (height - total_height) / 2
+        
+        main_x = (width - main_width) / 2
+        main_y = start_y
+        
+        sub_x = (width - sub_width) / 2
+        sub_y = start_y + main_height + spacing
+        
+        draw.text((main_x, main_y), main_text, fill="black", font=main_font)
+        draw.text((sub_x, sub_y), sub_text, fill="darkgray", font=sub_font)
+
+        img.save(output_file)

@@ -12,6 +12,7 @@ CONFIG_DIR = "config"
 
 # Config constants
 NAME_KEY = "name"
+HOSTNAME_KEY = "hostname"
 IMAGE_FOLDER_KEY = "image_folder"
 ORIENTATION_KEY = "orientation"
 INVERTED_IMAGE_KEY = "inverted_image"
