@@ -32,6 +32,7 @@ class ImageManager:
         self.image_files: List[str] = []
         hostname = config.get(HOSTNAME_KEY)
         local_ip = config.get(LOCAL_IP_KEY)
+        print(hostname, local_ip)
         self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image(hostname, f"Access the website at http://{hostname} or http://{local_ip}")
         self.refresh_image_list()
 

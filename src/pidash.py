@@ -30,8 +30,8 @@ def main():
     
     hostname, local_ip = get_network_info()
 
-    app.config[CONFIG_KEY].set(HOSTNAME_KEY, hostname, save=True)
-    app.config[CONFIG_KEY].set(LOCAL_IP_KEY, local_ip, save=True)
+    app.config[CONFIG_KEY].set(HOSTNAME_KEY, hostname)
+    app.config[CONFIG_KEY].set(LOCAL_IP_KEY, local_ip)
     
     try:
         app.config[REFRESH_MANAGER_KEY].start()
