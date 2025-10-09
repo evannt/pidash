@@ -57,7 +57,7 @@ ALLOWED_MIME_TYPES = {
 }
 
 # Validation constants
-MIN_REFRESH_INTERVAL = 1  # 1 second
+MIN_REFRESH_INTERVAL = 60  # 1 second
 MAX_REFRESH_INTERVAL = SECONDS_PER_DAY  # 24 hours
 VALID_ORIENTATIONS = {"landscape", "portrait"}
 
