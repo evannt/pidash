@@ -28,7 +28,7 @@ class ImageManager:
         """
         self.config = config
         self.image_folder: str = os.path.abspath(os.path.join(self.BASE_DIR, config.get(IMAGE_FOLDER_KEY)))
-        self.current_index: int = config.get(CURRENT_IMAGE_INDEX_KEY, 0)
+        self.current_index: int = config.get(CURRENT_IMAGE_INDEX_KEY)
         self.image_files: List[str] = []
         hostname = config.get(HOSTNAME_KEY)
         local_ip = config.get(LOCAL_IP_KEY)
@@ -270,15 +270,15 @@ class ImageManager:
     def _create_image(self, main_text: str, sub_text: str, size: tuple[int, int], output_file: str) -> None:
         """Helper method to create a single image."""
         width, height = size
-        img = Image.new("RGB", size, color="gray")
+        img = Image.new("RGB", size, color="white")
         draw = ImageDraw.Draw(img)
         
         try:
             main_font = ImageFont.truetype("arial.ttf", 48)
             sub_font = ImageFont.truetype("arial.ttf", 32)
         except:
-            main_font = ImageFont.load_default()
-            sub_font = ImageFont.load_default()
+            main_font = ImageFont.load_default(48)
+            sub_font = ImageFont.load_default(32)
         
         main_bbox = draw.textbbox((0, 0), main_text, font=main_font)
         main_width = main_bbox[2] - main_bbox[0]

@@ -6,7 +6,7 @@ from image_manager import ImageManager
 from display_manager import DisplayManager
 from refresh_manager import RefreshManager
 from blueprints import (pidash, config, display, home, upload, gallery, settings)
-from constants import (CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, REFRESH_MANAGER_KEY)
+from constants import (CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, REFRESH_MANAGER_KEY, HOSTNAME_KEY, LOCAL_IP_KEY)
 from waitress import serve
 
 def create_app(hostname=None, local_ip=None):
@@ -20,9 +20,9 @@ def create_app(hostname=None, local_ip=None):
     configuration = Config()
 
     if hostname is not None:
-        configuration.set("hostname", hostname)
+        configuration.set(HOSTNAME_KEY, hostname)
     if local_ip is not None:
-        configuration.set("local_ip", local_ip)
+        configuration.set(LOCAL_IP_KEY, local_ip)
 
     image_manager = ImageManager(configuration)
     display_manager = DisplayManager(configuration)

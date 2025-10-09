@@ -11,7 +11,7 @@ from src.blueprints import settings
 from src.blueprints import display
 from src.config import Config
 from src.image_manager import ImageManager
-from src.constants import CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, LOG_FORMAT, LOG_DATE_FORMAT
+from src.constants import CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, LOG_FORMAT, LOG_DATE_FORMAT, HOSTNAME_KEY, LOCAL_IP_KEY
 
 # Test app designed for local development
 def create_app():
@@ -39,6 +39,10 @@ def create_app():
             return True
 
     configuration = Config()
+
+    configuration.set(HOSTNAME_KEY, "Pidash")
+    configuration.set(LOCAL_IP_KEY, "localhost")
+
     app.config[CONFIG_KEY] = configuration
     app.config[IMAGE_MANAGER_KEY] = ImageManager(configuration)
     app.config[DISPLAY_MANAGER_KEY] = DummyRefreshManager()
