@@ -31,9 +31,7 @@ class ImageManager:
         self.current_index: int = config.get(CURRENT_IMAGE_INDEX_KEY)
         self.image_files: List[str] = []
         hostname = config.get(HOSTNAME_KEY)
-        local_ip = config.get(LOCAL_IP_KEY)
-        print(hostname, local_ip)
-        self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image(hostname, f"Access the website at http://{hostname} or http://{local_ip}")
+        self.default_image_landscape_path, self.default_image_portrait_path = self.create_default_image(hostname, f"Visit: http://{hostname}")
         self.refresh_image_list()
 
     def get_image_names(self) -> List[str]:
@@ -288,7 +286,7 @@ class ImageManager:
         sub_width = sub_bbox[2] - sub_bbox[0]
         sub_height = sub_bbox[3] - sub_bbox[1]
         
-        spacing = 10
+        spacing = 15
         
         total_height = main_height + spacing + sub_height
         
@@ -301,6 +299,6 @@ class ImageManager:
         sub_y = start_y + main_height + spacing
         
         draw.text((main_x, main_y), main_text, fill="black", font=main_font)
-        draw.text((sub_x, sub_y), sub_text, fill="darkgray", font=sub_font)
+        draw.text((sub_x, sub_y), sub_text, fill="black", font=sub_font)
 
         img.save(output_file)

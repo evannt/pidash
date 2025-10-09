@@ -9,7 +9,7 @@ from blueprints import (pidash, config, display, home, upload, gallery, settings
 from constants import (CONFIG_KEY, IMAGE_MANAGER_KEY, DISPLAY_MANAGER_KEY, REFRESH_MANAGER_KEY, HOSTNAME_KEY, LOCAL_IP_KEY)
 from waitress import serve
 
-def create_app(hostname=None, local_ip=None):
+def create_app(hostname=None):
     basedir = os.path.abspath(os.path.dirname(__file__))
     src_dir = os.path.dirname(basedir)
     app = Flask(__name__, template_folder=os.path.join(src_dir, "templates"), 
@@ -21,8 +21,6 @@ def create_app(hostname=None, local_ip=None):
 
     if hostname is not None:
         configuration.set(HOSTNAME_KEY, hostname)
-    if local_ip is not None:
-        configuration.set(LOCAL_IP_KEY, local_ip)
 
     image_manager = ImageManager(configuration)
     display_manager = DisplayManager(configuration)

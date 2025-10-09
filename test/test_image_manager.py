@@ -6,16 +6,13 @@ from src.image_manager import ImageManager
 def test_image_manager_loads():
     config = Config()
     config.set(HOSTNAME_KEY, "Hello Pidash!")
-    config.set(LOCAL_IP_KEY, "This is sub text")
     _ = ImageManager(config=config)
 
 def test_create_image():
     config = Config()
-    config.set(HOSTNAME_KEY, "Hello Pidash!")
-    config.set(LOCAL_IP_KEY, "This is sub text")
+    config.set(HOSTNAME_KEY, "Pidash")
 
-    assert config.get(HOSTNAME_KEY) == "Hello Pidash!"
-    assert config.get(LOCAL_IP_KEY) == "This is sub text"
+    assert config.get(HOSTNAME_KEY) == "Pidash"
 
     image_manager = ImageManager(config=config)
 
@@ -41,5 +38,4 @@ def test_create_image():
     os.remove(default_portrait)
 
     del config.config[HOSTNAME_KEY]
-    del config.config[LOCAL_IP_KEY]
     config.save_config()

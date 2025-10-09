@@ -20,7 +20,7 @@ class DisplayManager:
         self.inky_display.set_border(self.inky_display.BLACK)
         logger.info(f"Inky display initialized: {self.inky_display.width}x{self.inky_display.height}")
         if not self.config.get(RESOLUTION_KEY):
-            self.config.set(RESOLUTION_KEY, [int(self.inky_display.width), int(self.inky_display.height)], save=True)
+            self.config.set(RESOLUTION_KEY, [int(self.inky_display.width), int(self.inky_display.height)])
 
     def display_image(self, image: Image.Image, image_settings=[]):
         logger.info("Displaying image to Inky display.")
