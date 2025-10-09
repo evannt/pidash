@@ -26,7 +26,7 @@ def get_network_info():
     return hostname, local_ip
 def main():
     hostname, local_ip = get_network_info()
-    app = create_app(hostname, local_ip)
+    app = create_app(hostname)
     logger.info("Starting PiDash webserver")
     
     try:
