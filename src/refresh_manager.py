@@ -56,6 +56,7 @@ class RefreshManager:
                 
                 if self.image_manager.get_image_count() == 0:
                     logger.warning("No images available for display. Monitoring for changes...")
+                    self.refresh_display()
                 else:
                     self.display_next_image()
                 
