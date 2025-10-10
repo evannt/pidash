@@ -34,6 +34,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+echo "Stopping $APPNAME service."
+systemctl stop $APPNAME.service
 CONFIG_BASE_DIR="$SCRIPT_DIR/config_base"
 CONFIG_DIR="$SRC_PATH/config"
 echo "Copying config files to $CONFIG_DIR"
@@ -77,6 +79,6 @@ else
 fi
 
 echo "Restarting $APPNAME service."
-systemctl restart $APPNAME.service
+systemctl start $APPNAME.service
 
 echo_success "Update completed."
